@@ -4,25 +4,44 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import robots.*;
 import Personnel.*;
+import main.*;
 
 
 public abstract class Mission {
-    public static int activeMissionCount = 0;
-    protected boolean activeStatus = false; //subclass and package
-    protected main.MarsOps colony;
+    public enum MissionStatus { PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, FAILED }
     
-    protected final List<Personnel.Person> people = new ArrayList<>();
+    public static int activeMissionCount = 0;
+    private boolean activeSlotClaimed = false;
+    private int totalSeconds;
+    
+    private MissionStatus status = MissionStatus.PENDING;
+    private String failureReason;
+
+    protected final List<Person> people = new ArrayList<>();
     
     private final ScheduledExecutorService scheduler;
     private int remainingSeconds;
+    private MarsOps colony;
     
-    public Mission(int totalSeconds, main.MarsOps colony){
+    public Mission(int totalSecond, MarsOps colony){
+        if (totalSeconds < 0) {
+        throw new IllegalArgumentException(
+            "Mission duration cannot be negative."
+        );
+    }
         this.scheduler = Executors.newScheduledThreadPool(1);
         this.remainingSeconds = totalSeconds;
         this.colony = colony;
+        
     }
+    
+    //Status
+    public MissionStatus getStatus() { return status; }
+    public String getFailureReason() { return failureReason; }
+    
+    //personnel skill
+    public abstract String requiredSkill();
     
     private void runChecks() {
         personnelCapabilityCheck();
@@ -33,66 +52,112 @@ public abstract class Mission {
         roboticsCheck();
         communicationCheck();
         environmentCheck();
-    }
+    } 
+        
     
     // start a mission -> check for activity of the mission
     public void startMission(){
-        if(activeStatus){
+        if(status != MissionStatus.PENDING){
             throw new IllegalStateException("This mission is already assigned.");
         }
         if(activeMissionCount >= 1){
-            throw new IllegalStateException("Mission FAILED. Already have an assigned mission. This mission cannot be authorised.");
+            fail("Mission FAILED. Already have an assigned mission. This mission cannot be authorised.");
+            return;
         }
-        for (Personnel.Person p : people) {
-                if (!p.available()) {
-                    throw new IllegalStateException(p.getName() + " is not available.");
-                }
+        for (Person p : people) {
+            if (!p.available()) {
+                fail(p.getName() + " is not available.");
+                return;
             }
-        
-        runChecks();
-        
+        }
+
+        try {
+            runChecks();
+        } catch (IllegalStateException e) {
+            fail(e.getMessage());
+            return;
+        }
+
         System.out.println("Mission authorised.");
         activeMissionCount++;
-        activeStatus = true; 
-        for (Personnel.Person p : people) {
+        activeSlotClaimed = true;
+        status = MissionStatus.ASSIGNED;
+        for (Person p : people) {
             p.setAvailable(false);
-    }
+        }
         startTimer();
+    }
+
+    //get the failure reason
+    private void fail(String reason) {
+    if (status == MissionStatus.COMPLETED ||
+        status == MissionStatus.FAILED) {
+        return;
+    }
+    status = MissionStatus.FAILED;
+    failureReason = reason;
+    System.out.println(reason);
+    cleanUp();
+}
+    
+    protected void failMission(String reason) {
+        fail(reason);
     }
     
     
     private void startTimer(){
+        status = MissionStatus.IN_PROGRESS;
+        if (remainingSeconds == 0) {
+            endMission();
+            return;
+        }
         scheduler.scheduleAtFixedRate(() -> {
-            if (remainingSeconds > 0) {
-                System.out.println("Time remaining: " + remainingSeconds + "s");
-                remainingSeconds--;
-            } else {
-                endMission();
+        if (status != MissionStatus.IN_PROGRESS) {
+            scheduler.shutdown();
+            return;
+        }
+        try {
+                checkMissionContinues();
+            } catch (IllegalStateException e) {
+                fail(e.getMessage());    
+                return;
             }
-        }, 0, 1, TimeUnit.SECONDS);
-    }
+
+        if (remainingSeconds > 0) {
+            remainingSeconds--;
+            System.out.println(
+                "Time remaining: " + remainingSeconds + "s"
+            );
+        }
+
+        if (remainingSeconds == 0) {
+            endMission();
+        }
+    }, 1, 1, TimeUnit.SECONDS);
+}
     
     
     public void endMission() {
-        if (!activeStatus) {
+        if (status != MissionStatus.IN_PROGRESS) {
             return;
         }
+        status = MissionStatus.COMPLETED;
         System.out.println("Mission completed!");
         cleanUp();
 }
     
-    private void cleanUp() {        
-        for (Personnel.Person p : people){ 
-            p.setAvailable(true);
-        }   //have a setAvaiable for all agents after mission is over 
-            // --> method in personnel, set agents singularly as active in respective missions.
-            //no agents are reserved -- add in human personnel
-        activeMissionCount--;
-        activeStatus = false;
+    private void cleanUp() {
+        if (activeSlotClaimed) {
+            for (Person p : people) {
+                p.setAvailable(true);
+            }
+            activeMissionCount--;
+            activeSlotClaimed = false;
+        }
         scheduler.shutdownNow();
-    }
+}
 
-    // human personnel needed as a parameter !!
+    // initial checks
     public abstract void personnelCapabilityCheck();
     public abstract void personnelPerformanceCheck();
     public abstract void personnelavailabilityCheck();
@@ -102,16 +167,8 @@ public abstract class Mission {
     public abstract void communicationCheck();
     public abstract void environmentCheck();
 
-    public void roverBreak(ExplorationRover rover) {
-        rover.breakDown();
-        this.activeStatus = false;
-        Mission.activeMissionCount -= 1;
-        for(Person p : people) {
-            p.setAvailable(true);
-        }
-        System.out.println("Mission Failed due to rover breakdown at "+rover.getLocation());
-        System.out.println("Repair Operation Required.");
-    }
+    //during mission checks
+    public abstract void checkMissionContinues();
     
     
     //Mission Failure Warnings
@@ -127,9 +184,9 @@ public abstract class Mission {
         throw new IllegalStateException("Mission FAILED! Unsuitable agent!");
     }
     
-    public void communicationDisruption(){
-        throw new IllegalStateException("Mission FAILED! Environmental conditions unsuitable!");
-    }
+    public void communicationDisruption() {
+        throw new IllegalStateException("Mission FAILED! Communication disrupted!");
+}
     
     public void insufficientBattery(){
         throw new IllegalStateException("Mission FAILED! Insufficient battery!");
@@ -137,6 +194,10 @@ public abstract class Mission {
     
     public void damagedRobot(){
         throw new IllegalStateException("Mission FAILED! Robot is damaged!");
+    }
+    
+    public void robotUnavailable(){
+        throw new IllegalStateException("Mission FAILED! Robot is unavailable!");
     }
     
     public void unavailablePersonnel(){
