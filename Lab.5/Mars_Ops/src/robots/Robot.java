@@ -7,6 +7,9 @@ public abstract class Robot {
     protected boolean available;
     
     public Robot(int batteryLevel, boolean damageStatus, String location, boolean available){
+       if(batteryLevel <0 || batteryLevel > 100){
+           throw new IllegalArgumentException("Battery level must be between 0 and 100.");
+       }
        this.batteryLevel = batteryLevel;
        this.location = location;
        this.damageStatus = damageStatus;
