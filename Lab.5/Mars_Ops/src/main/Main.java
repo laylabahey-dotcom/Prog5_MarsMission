@@ -41,7 +41,7 @@ public class Main {
         try {
             Resources[] expRes = {new Resources(0,0,0,0,10,0,2)};
             Equipment[] roverEquip = {new Equipment("002","Scanner",false)};
-            Exploration validMission = new Exploration(5,solar,eng,rover,roverEquip,comm,expRes,marsEnv);
+            Exploration validMission = new Exploration(5,eng,rover,roverEquip,comm,expRes,marsEnv,solar);
             validMission.startMission();
             System.out.println("Scenario 1 Passed! Exploration mission executed successfully!\n");
         } catch (Exception e) {
