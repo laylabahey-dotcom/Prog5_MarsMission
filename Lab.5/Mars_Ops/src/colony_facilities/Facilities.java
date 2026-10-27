@@ -29,7 +29,10 @@ public class Facilities {
     public boolean isOpStatus() {
         return opStatus;
     }
-
+    public void setOpStatus(boolean status){
+        this.opStatus = status;
+        
+    }
     public Resources getResource() {
         return resource;
     }

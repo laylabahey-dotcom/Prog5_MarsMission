@@ -6,11 +6,11 @@ import robots.*;
 import main.*;
 import supply.*;
 
-public class Emergency {
-    private String type;
-    private String location;
-    private boolean solved;
-    private MarsOps colony;
+public abstract class Emergency {
+    protected String type;
+    protected String location;
+    protected boolean solved;
+    protected MarsOps colony;
 
     public Emergency(String type, String location, MarsOps colony) {
         this.type = type;
@@ -22,39 +22,8 @@ public class Emergency {
     public boolean isSolved() {
         return solved;
     }
-    
-    public void roverBreakDown(ExplorationRover rover, Engineer eng, RepairRobot robot, Resources reqResources) {
-        if(!rover.getDamageStatus()) {
-            System.out.println("Emergency Failed! Rover is not damaged.");
-            return;
-        }
-        if(eng == null || !eng.available() || robot == null || !robot.isAvailable()) {
-            System.out.println("Emergency Unresolved! Required Responders (engineer and repair robot).");
-            return;
-        }
-        int reqParts = (reqResources != null) ? reqResources.getSpare_count() : 0;
-        int reqFuel = (reqResources != null) ? reqResources.getFuel_count() : 0;
-        if(colony.getTotalResources("parts") < reqParts || colony.getTotalResources("fuel") < reqFuel) {
-            System.out.println("Unsolved Emergency! Insufficient Resources.");
-            return;
-        }
-        boolean success = true;
-        if(reqParts > 0) {
-            success &= colony.consumeResources("parts",reqParts);
-        }
-        if (reqFuel > 0) {
-            success &= colony.consumeResources("fuel", reqFuel);
-        }
-        if(success) {
-            eng.setLocation(rover.getLocation());
-            rover.setDamageStatus(false);
-            rover.recharge();
-            this.solved = true;
-            System.out.println("Rover breakdown successfully fixed!");
-        } else {
-            System.out.println("Emergency Unsolved! Resource allocation failed.");
-        }
-    }
+    public abstract void resolveEmergency();
+    /*
     
     public void medEmergency(Person patient, MedicalOfficer med, Facilities facility, Resources reqResources, int HP) {
         if(facility != null && !facility.isOpStatus()) {
@@ -85,5 +54,5 @@ public class Emergency {
         } else {
             System.out.println("Emergency Unsolved! Resource Allocation Failed!");
         }
-    }
+    } */
 }
