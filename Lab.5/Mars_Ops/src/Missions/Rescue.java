@@ -11,7 +11,7 @@ public class Rescue extends Mission{
     private robots.Drone drone;
     private Personnel.Engineer eng;
     private Personnel.MedicalOfficer med;
-    private colony_facilities.Communication_Stations comm;
+    private colony_facilities.Communication_Stations comm;  
     private MarsOps colony;
     
 

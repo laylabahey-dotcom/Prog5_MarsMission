@@ -17,7 +17,7 @@ public class Repair extends Mission{
     private Equipment explorationEquipment[];
     private Resources expRes[];
     private Person repairman;
-    private Facilities repairTarget;
+    private Facilities repairTarget; //lab or power station
     private MarsOps colony;
     
     public Repair(int totalSeconds, Person repairman, Robot repairBot, Equipment explorationEquipment[], 

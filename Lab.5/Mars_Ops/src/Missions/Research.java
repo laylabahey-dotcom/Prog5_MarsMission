@@ -29,6 +29,9 @@ public class Research extends Mission {
         }
         this.scientificEquipment = scientificEquipment;
         this.scientificResources = scientificResources;
+        if(!(lab instanceof Laboratory)){
+            throw new IllegalStateException("Research must be conducted in a laboratory!");
+        }
         this.lab = lab;
     }
 

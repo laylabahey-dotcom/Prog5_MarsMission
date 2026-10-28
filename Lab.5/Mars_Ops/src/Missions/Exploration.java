@@ -14,6 +14,7 @@ public class Exploration extends Mission{
     private Resources expRes[];
     private Person driver;
     private Environment missionEnvironment;
+    //private MarsSurface surface; // facility u will import and detect emergencies there.
     private MarsOps colony;
    
   
