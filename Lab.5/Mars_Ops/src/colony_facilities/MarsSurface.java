@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package colony_facilities;
 
-/**
- *
- * @author microsoft
- */
-public class MarsSurface {
-    
+import supply.*;
+
+public class MarsSurface extends Facilities {
+
+    public MarsSurface(String location, int capacity, boolean opStatus, Resources resource, Equipment equipment) {
+        super(location, capacity, opStatus, resource, equipment);
+    }
+
 }

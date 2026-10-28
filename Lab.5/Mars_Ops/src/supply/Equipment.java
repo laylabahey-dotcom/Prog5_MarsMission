@@ -1,6 +1,7 @@
 package supply;
 
 public class Equipment {
+
     private String id;
     private String name;
     private boolean damaged;
@@ -26,13 +27,13 @@ public class Equipment {
     public void setDamaged(boolean damaged) {
         this.damaged = damaged;
     }
-    
+
     public void repairEquipment() {
-        if(damaged) {
+        if (damaged) {
             damaged = false;
-            System.out.println("Equipment "+name+" ("+id+") has been repaired successfully!");
+            System.out.println("Equipment " + name + " (" + id + ") has been repaired successfully!");
         } else {
-            System.out.println("Equipment "+name+" ("+id+") does not require repairing.");
+            System.out.println("Equipment " + name + " (" + id + ") does not require repairing.");
         }
     }
 }

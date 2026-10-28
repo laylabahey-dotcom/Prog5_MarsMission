@@ -1,8 +1,8 @@
-
 package robots;
 
 public class Drone extends Robot {
-    public Drone(int batteryLevel,boolean damageStatus, String location, boolean available) {
+
+    public Drone(int batteryLevel, boolean damageStatus, String location, boolean available) {
         super(batteryLevel, damageStatus, location, available);
     }
 
@@ -10,5 +10,5 @@ public class Drone extends Robot {
     public void performTask() {
         System.out.println("Performing aerial reconnaissance!");
     }
-    
+
 }

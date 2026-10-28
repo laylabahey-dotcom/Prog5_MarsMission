@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Missions;
 
 import colony_facilities.*;
@@ -10,26 +6,25 @@ import supply.*;
 import main.*;
 
 public class Research extends Mission {
+
     private Person scientist[];
     private Facilities lab;
     private Equipment scientificEquipment[];
     private Resources scientificResources[];
-    private MarsOps colony;
 
     public Research(int totalSeconds, Person scientist[],
             Equipment scientificEquipment[],
             Resources scientificResources[], Facilities lab, MarsOps colony) {
 
         super(totalSeconds, colony);
-        
-        
+
         this.scientist = scientist;
         for (Person s : scientist) {
             people.add(s);
         }
         this.scientificEquipment = scientificEquipment;
         this.scientificResources = scientificResources;
-        if(!(lab instanceof Laboratory)){
+        if (!(lab instanceof Laboratory)) {
             throw new IllegalStateException("Research must be conducted in a laboratory!");
         }
         this.lab = lab;
@@ -90,27 +85,27 @@ public class Research extends Mission {
             }
         }
         int reqParts = 0, reqBattery = 0;
-        for(Resources resource : scientificResources) {
-            if(resource != null) {
+        for (Resources resource : scientificResources) {
+            if (resource != null) {
                 reqParts += resource.getSpare_count();
                 reqBattery += resource.getBattery_units_count();
             }
         }
-        if(colony.getTotalResources("parts") < reqParts || colony.getTotalResources("battery") < reqBattery) {
+        if (colony.getTotalResources("parts") < reqParts || colony.getTotalResources("battery") < reqBattery) {
             insufficientResources();
         }
         boolean success = true;
-        if(reqParts > 0) {
-            success &= colony.consumeResources("parts",reqParts);
+        if (reqParts > 0) {
+            success &= colony.consumeResources("parts", reqParts);
         }
-        if(reqBattery > 0) {
-            success &= colony.consumeResources("battery",reqBattery);
+        if (reqBattery > 0) {
+            success &= colony.consumeResources("battery", reqBattery);
         }
-        if(!success) {
+        if (!success) {
             insufficientResources();
         }
         System.out.println("Scientific equipment is ready!");
-}
+    }
 
     @Override
     public void equipmentCheck() {
@@ -162,8 +157,7 @@ public class Research extends Mission {
             if (e == null || e.isDamaged()) {
                 failMission("Equipment is damaged!");
                 return;
+            }
+        }
     }
 }
-}
-}
-    

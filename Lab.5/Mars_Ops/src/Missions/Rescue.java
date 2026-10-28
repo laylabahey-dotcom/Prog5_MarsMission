@@ -7,30 +7,29 @@ import Personnel.Person;
 import robots.*;
 import supply.*;
 
-public class Rescue extends Mission{
+public class Rescue extends Mission {
+
     private robots.Drone drone;
     private Personnel.Engineer eng;
     private Personnel.MedicalOfficer med;
-    private colony_facilities.Communication_Stations comm;  
-    private MarsOps colony;
-    
+    private colony_facilities.Communication_Stations comm;
 
-    public Rescue(robots.Drone drone, Personnel.Engineer eng, Personnel.MedicalOfficer med, Communication_Stations comm, 
+    public Rescue(robots.Drone drone, Personnel.Engineer eng, Personnel.MedicalOfficer med, Communication_Stations comm,
             int totalSeconds, MarsOps colony) {
         super(totalSeconds, colony);
         this.drone = drone;
         this.eng = eng;
         if (eng != null) {
-        this.people.add(eng);
+            this.people.add(eng);
         }
         this.med = med;
         if (med != null) {
-        this.people.add(med);
+            this.people.add(med);
         }
         this.comm = comm;
-        
+
     }
-    
+
     @Override
     public void personnelCapabilityCheck() {
     }
