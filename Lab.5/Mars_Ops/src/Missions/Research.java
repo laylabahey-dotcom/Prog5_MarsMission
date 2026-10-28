@@ -132,17 +132,17 @@ public class Research extends Mission {
 
     @Override
     public void roboticsCheck() {
-        throw new UnsupportedOperationException("Not supported."); 
+       //
     }
 
     @Override
     public void communicationCheck() {
-        throw new UnsupportedOperationException("Not supported."); 
+       //
     }
 
     @Override
     public void environmentCheck() {
-        throw new UnsupportedOperationException("Not supported."); 
+        //
     }
 
     // for during-mission checks

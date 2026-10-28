@@ -8,25 +8,24 @@ import environment.*;
 import emergency.*;
 import main.*;
 
-public class Exploration extends Mission{
+public class Exploration extends Mission {
+
     private final Robot r;
     private Equipment explorationEquipment[];
     private Communication_Stations comm;
     private Resources expRes[];
     private Person driver;
     private Environment missionEnvironment;
-    private MarsSurface surface; // facility u will import and detect emergencies there.
+    private MarsSurface surface;
     private MarsOps colony;
-   
-  
-   
-   public Exploration(int totalSeconds, Person driver, Robot r, Equipment explorationEquipment[], 
-           Communication_Stations comm, Resources expRes[], MarsSurface surface, 
-           MarsOps colony){ 
-       
-       super(totalSeconds, colony);  
-       this.r = r;
-       if (!(r instanceof ExplorationRover) && !(r instanceof Drone)) {
+
+    public Exploration(int totalSeconds, Person driver, Robot r, Equipment explorationEquipment[],
+            Communication_Stations comm, Resources expRes[], Environment missionEnvironment,
+            MarsOps colony, MarsSurface surface) {
+
+        super(totalSeconds, colony);
+        this.r = r;
+        if (!(r instanceof ExplorationRover) && !(r instanceof Drone)) {
             throw new IllegalArgumentException("Mission must have an exploration rover or a drone!");
         }
        if(r instanceof ExplorationRover){
@@ -40,7 +39,6 @@ public class Exploration extends Mission{
        this.driver = driver;
        people.add(driver);
        this.explorationEquipment = explorationEquipment;
-
        this.expRes = expRes;
       
    }
@@ -50,7 +48,6 @@ public class Exploration extends Mission{
     public String requiredSkill() {
         return "Exploration";
     }
-
 
     @Override
     public void personnelCapabilityCheck() {
@@ -65,48 +62,46 @@ public class Exploration extends Mission{
 
     @Override
     public void personnelPerformanceCheck() {
-        if(driver.getHealth() > 50 && driver.getFatigueLevel() < 80){
+        if (driver.getHealth() > 50 && driver.getFatigueLevel() < 80) {
             System.out.println("Engineer is healthy and rested!");
-        }
-        else{
+        } else {
             this.unsuitableAgent();
         }
     }
 
     @Override
     public void personnelavailabilityCheck() {
-        if(driver.available()){
+        if (driver.available()) {
             System.out.println("Driver is available!");
-        }
-        else{
+        } else {
             this.unavailablePersonnel();
         }
     }
 
-     @Override
+    @Override
     public void resourceCheck() {
         if (expRes == null || expRes.length == 0) {
             System.out.println("WARNING: No resources assigned to this exploration!");
             insufficientResources();
         }
         int reqParts = 0, reqBattery = 0;
-        for(Resources resource : expRes) {
-            if(resource != null) {
+        for (Resources resource : expRes) {
+            if (resource != null) {
                 reqParts += resource.getSpare_count();
                 reqBattery += resource.getBattery_units_count();
             }
         }
-        if(colony.getTotalResources("parts") < reqParts || colony.getTotalResources("battery") < reqBattery) {
+        if (colony.getTotalResources("parts") < reqParts || colony.getTotalResources("battery") < reqBattery) {
             insufficientResources();
         }
         boolean success = true;
-        if(reqParts > 0) {
-            success &= colony.consumeResources("parts",reqParts);
+        if (reqParts > 0) {
+            success &= colony.consumeResources("parts", reqParts);
         }
-        if(reqBattery > 0) {
-            success &= colony.consumeResources("battery",reqBattery);
+        if (reqBattery > 0) {
+            success &= colony.consumeResources("battery", reqBattery);
         }
-        if(!success) {
+        if (!success) {
             insufficientResources();
         }
         System.out.println("Resources are sufficient!");
@@ -119,9 +114,9 @@ public class Exploration extends Mission{
             failMission("Equipment is insufficient!");
             return;
         }
-        for(Equipment e: explorationEquipment){
-            if(e.isDamaged()){ 
-                equipmentFailure(); 
+        for (Equipment e : explorationEquipment) {
+            if (e.isDamaged()) {
+                equipmentFailure();
                 failMission("Equipment is damaged!");
                 return;
             }
@@ -135,15 +130,15 @@ public class Exploration extends Mission{
             insufficientBattery();
             return;
         }
-        if(r.getDamageStatus()){
+        if (r.getDamageStatus()) {
             damagedRobot();
             return;
         }
-        if(!(r.isAvailable())){
+        if (!(r.isAvailable())) {
             robotUnavailable();
             return;
         }
-        System.out.println("Robot battery is sufficient, available and undamaged!");  
+        System.out.println("Robot battery is sufficient, available and undamaged!");
     }
 
     @Override
@@ -174,26 +169,32 @@ public class Exploration extends Mission{
     //for during mission check
     @Override
     public void checkMissionContinues() {
-        if (!driver.canPerform(requiredSkill()))
+        if (!driver.canPerform(requiredSkill())) {
             failMission("Agent is unsuitable! Does not have required skill.");
-        if (!(driver.getHealth() > 50 && driver.getFatigueLevel() < 80))
-            failMission("Agent is unhealthy or fatigued!");
-        if(!(driver.available()))
-            failMission("Agent is unavailable.");
-        for(Equipment e: explorationEquipment){
-            if(e.isDamaged())
-                failMission("Equipment is damaged!");
         }
-        if(!(r.getBatteryLevel() <= 20))
+        if (!(driver.getHealth() > 50 && driver.getFatigueLevel() < 80)) {
+            failMission("Agent is unhealthy or fatigued!");
+        }
+        if (!(driver.available())) {
+            failMission("Agent is unavailable.");
+        }
+        for (Equipment e : explorationEquipment) {
+            if (e.isDamaged()) {
+                failMission("Equipment is damaged!");
+            }
+        }
+        if (!(r.getBatteryLevel() <= 20)) {
             failMission("Bot's battery is running low!");
-        if(!r.getDamageStatus())
+        }
+        if (!r.getDamageStatus()) {
             failMission("Bot sustained damage!");
+        }
         if (comm == null || !comm.checkSignal()) {
             failMission("Communication disruption during mission!");
         }
         boolean environmentSuitable = (r instanceof Drone)
-        ? missionEnvironment.isDustStorm()
-        : missionEnvironment.isCommDisruption();
+                ? missionEnvironment.isDustStorm()
+                : missionEnvironment.isCommDisruption();
 
         if (!environmentSuitable) {
             failMission("Environmental conditions are unsuitable!");

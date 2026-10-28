@@ -9,45 +9,62 @@ import robots.*;
 import supply.*;
 
 public class Main {
+
     public static void main(String[] args) {
         //1.initializing our system
         MarsOps solar = new MarsOps("Solar");
         Environment marsEnv = new Environment();
-        
+        Simulation simulation = new Simulation(solar, marsEnv);
+
         //facilities w resources initialization (mesh 3arfa if i should do all or not T-T )
-        Resources storageRes = new Resources(1000,1000,500,500,100,100,50);
-        Equipment generalEquip = new Equipment("001","Drill",false);
-        Storage mainStorage = new Storage(40.5,15.0,"ST-001","idk",5000,true,storageRes,generalEquip); //7oti locationnnnn
+        Resources storageRes = new Resources(1000, 1000, 500, 500, 100, 100, 50);
+        Equipment generalEquip = new Equipment("001", "Drill", false);
+        Storage mainStorage = new Storage(40.5, 15.0, "ST-001", "idk", 5000, true, storageRes, generalEquip); //7oti locationnnnn
         solar.addFacility(mainStorage);
-        
+
         //personnel & robots
-        Engineer eng = new Engineer("Khaled","E-255","idk");//add locationnn
-        Scientist sci = new Scientist("Mona","SC-350","idk");
-        MedicalOfficer med = new MedicalOfficer("Yazan","M-404","idk");
-        ExplorationRover rover = new ExplorationRover(75,false,"idk",true);
-        RepairRobot repair = new RepairRobot(89,false,"idk",true);
-        Drone drone = new Drone(45,false,"idk",true);
+        Engineer eng = new Engineer("Khaled", "E-255", "idk");//add locationnn
+        Scientist sci = new Scientist("Mona", "SC-350", "idk");
+        MedicalOfficer med = new MedicalOfficer("Yazan", "M-404", "idk");
+        ExplorationRover rover = new ExplorationRover(75, false, "idk", true);
+        RepairRobot repair = new RepairRobot(89, false, "idk", true);
+        Drone drone = new Drone(45, false, "idk", true);
         solar.addCrewMembers(eng);
         solar.addCrewMembers(sci);
         solar.addCrewMembers(med);
         solar.addRobot(rover);
         solar.addRobot(repair);
         solar.addRobot(drone);
-        
+
         //comm station
-        Communication_Stations comm = new Communication_Stations(56.7,true,"C-001","idk",100,true,storageRes,generalEquip);
-        
+        Communication_Stations comm = new Communication_Stations(56.7, true, "C-001", "idk", 100, true, storageRes, generalEquip);
+
         //Scenario 1: Successful Exploration
         try {
-            Resources[] expRes = {new Resources(0,0,0,0,10,0,2)};
-            Equipment[] roverEquip = {new Equipment("002","Scanner",false)};
-            Exploration validMission = new Exploration(5,eng,rover,roverEquip,comm,expRes,marsEnv,solar);
+            Resources[] expRes1 = {new Resources(0, 0, 0, 0, 10, 0, 2)};
+            Equipment[] roverEquip = {new Equipment("002", "Scanner", false)};
+            Exploration validMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar);
             validMission.startMission();
             System.out.println("Scenario 1 Passed! Exploration mission executed successfully!\n");
         } catch (Exception e) {
-            System.out.println("Scenario 1 Failed: "+e.getMessage()+"\n");
+            System.out.println("Scenario 1 Failed: " + e.getMessage() + "\n");
         }
-        
+
         //Scenario 2: Mission Rejection
+        
+        //Scenario 3: Resource Shortage
+        Resources[] expRes3 = {new Resources(0, 0, 0, 0, 10, 0, 222)};
+        Equipment[] repairEquip = {new Equipment("003", "Tools", false)};
+        Habitats shelter = new Habitats(220, "H-230", "idk", 500, true, storageRes, generalEquip);
+        Repair shortageMission = new Repair(5, eng, repair, repairEquip, expRes3, shelter, solar);
+        shortageMission.startMission();
+        if (shortageMission.getStatus() == Mission.MissionStatus.FAILED) {
+            System.out.println("Scenario 3 Passed! Resource shortage correctly caught and rejected!\n");
+        }
+
+        //Scenario 4: Emergency Handling
+        
+        //Scenario 5: Environmental Effect
+        
     }
 }

@@ -1,19 +1,20 @@
 package robots;
 
 public abstract class Robot {
+
     protected int batteryLevel;
     protected boolean damageStatus;
     protected String location;
     protected boolean available;
-    
-    public Robot(int batteryLevel, boolean damageStatus, String location, boolean available){
-       if(batteryLevel <0 || batteryLevel > 100){
-           throw new IllegalArgumentException("Battery level must be between 0 and 100.");
-       }
-       this.batteryLevel = batteryLevel;
-       this.location = location;
-       this.damageStatus = damageStatus;
-       this.available = available;
+
+    public Robot(int batteryLevel, boolean damageStatus, String location, boolean available) {
+        if (batteryLevel < 0 || batteryLevel > 100) {
+            throw new IllegalArgumentException("Battery level must be between 0 and 100.");
+        }
+        this.batteryLevel = batteryLevel;
+        this.location = location;
+        this.damageStatus = damageStatus;
+        this.available = available;
     }
 
     public void setDamageStatus(boolean damageStatus) {
@@ -23,51 +24,50 @@ public abstract class Robot {
     public void setAvailable(boolean available) {
         this.available = available;
     }
-    
-    public void recharge(){
+
+    public void recharge() {
         batteryLevel = 100;
     }
+
     //check whether a robot can perform a mission
-    public boolean canPerform(Missions.Mission mission){
-        return available && batteryLevel>20 && !damageStatus;
+    public boolean canPerform(Missions.Mission mission) {
+        return available && batteryLevel > 20 && !damageStatus;
     }
-     //check whether a robot can respond to an emergency
-    public boolean canHandle(emergency.Emergency emergency){
-        return available && batteryLevel>20 && !damageStatus;
+    //check whether a robot can respond to an emergency
+
+    public boolean canHandle(emergency.Emergency emergency) {
+        return available && batteryLevel > 20 && !damageStatus;
 
     }
 
     public abstract void performTask();//diff for every robot
 
     //getters
-    public int getBatteryLevel(){
-        return batteryLevel;         
+    public int getBatteryLevel() {
+        return batteryLevel;
     }
 
-    public String getLocation(){
+    public String getLocation() {
         return location;
     }
-    public void setLocation(String location){
+
+    public void setLocation(String location) {
         this.location = location;
-        
+
     }
-    public boolean isAvailable(){
+
+    public boolean isAvailable() {
         return available;
     }
-    public boolean getDamageStatus(){
+
+    public boolean getDamageStatus() {
         return damageStatus;
     }
+
     public void setBatteryLevel(int batteryLevel) {
-     if (batteryLevel >= 0 && batteryLevel <= 100) {
-         this.batteryLevel = batteryLevel;
-     }
-}
-   
-   
-   
-   
-   
-   
-   
-   
+        if (batteryLevel >= 0 && batteryLevel <= 100) {
+            this.batteryLevel = batteryLevel;
+        }
+    }
+
 }

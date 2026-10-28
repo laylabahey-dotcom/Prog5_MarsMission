@@ -40,7 +40,7 @@ public class Rescue extends Mission {
         
         System.out.println("Initiating rescue mission deployment!");
     }
-    
+
     @Override
     public String requiredSkill() {
         return "Rescue";

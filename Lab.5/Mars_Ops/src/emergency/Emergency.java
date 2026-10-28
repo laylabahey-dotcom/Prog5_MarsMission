@@ -7,6 +7,7 @@ import main.*;
 import supply.*;
 
 public abstract class Emergency {
+
     protected String type;
     protected String location;
     protected boolean solved;
@@ -18,7 +19,7 @@ public abstract class Emergency {
         this.colony = colony;
         this.solved = false;
     }
-    
+
     public boolean isSolved() {
         return solved;
     }
@@ -26,6 +27,7 @@ public abstract class Emergency {
     public abstract String getType();
     
     public abstract void resolveEmergency();
+
     /*
     
     public void medEmergency(Person patient, MedicalOfficer med, Facilities facility, Resources reqResources, int HP) {
