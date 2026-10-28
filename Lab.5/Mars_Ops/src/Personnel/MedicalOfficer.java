@@ -6,6 +6,7 @@ public class MedicalOfficer extends Person {
     }
     @Override
     public boolean canPerform(String task) {
-        return task.equalsIgnoreCase("MedicalEmergency");
+        return task.equalsIgnoreCase("MedicalEmergency") ||
+                task.equalsIgnoreCase("Rescue");
     }
 }

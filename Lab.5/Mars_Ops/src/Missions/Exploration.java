@@ -5,6 +5,7 @@ import supply.*;
 import Personnel.*;
 import colony_facilities.*;
 import environment.*;
+import emergency.*;
 import main.*;
 
 public class Exploration extends Mission{
@@ -14,13 +15,13 @@ public class Exploration extends Mission{
     private Resources expRes[];
     private Person driver;
     private Environment missionEnvironment;
-    //private MarsSurface surface; // facility u will import and detect emergencies there.
+    private MarsSurface surface; // facility u will import and detect emergencies there.
     private MarsOps colony;
    
   
    
    public Exploration(int totalSeconds, Person driver, Robot r, Equipment explorationEquipment[], 
-           Communication_Stations comm, Resources expRes[], Environment missionEnvironment, 
+           Communication_Stations comm, Resources expRes[], MarsSurface surface, 
            MarsOps colony){ 
        
        super(totalSeconds, colony);  
@@ -35,11 +36,11 @@ public class Exploration extends Mission{
            System.out.println("Conducting areial exploration with a drone!");
        }
        
-       this.missionEnvironment = missionEnvironment;
+       this.surface = surface;
        this.driver = driver;
        people.add(driver);
        this.explorationEquipment = explorationEquipment;
-       this.comm = comm;
+
        this.expRes = expRes;
       
    }
@@ -156,12 +157,16 @@ public class Exploration extends Mission{
 
     @Override
     public void environmentCheck() {
-        boolean canStart = (r instanceof Drone)
-                ? missionEnvironment.isDustStorm()
-                : missionEnvironment.isCommDisruption();
-
-        if (!canStart) {
-            throw new IllegalStateException("Environment prevents this mission from starting!");
+        boolean canStart;
+        if(missionEnvironment.isDustStorm() && r instanceof ExplorationRover){
+                System.out.println("Dust storm making ground exploration mission impossible!");
+                canStart = false;
+                throw new IllegalStateException("Environment prevents ground exploration mission from starting!");
+            }
+        if(missionEnvironment.isCommDisruption() && r instanceof Drone){
+            System.out.println("Communication failure making aerial exploration mission impossible!");
+            canStart = false;
+            throw new IllegalStateException("Environment prevents this aerial mission from starting!");
         }
         System.out.println("Environmental conditions are suitable!");
     }
@@ -192,11 +197,38 @@ public class Exploration extends Mission{
 
         if (!environmentSuitable) {
             failMission("Environmental conditions are unsuitable!");
-            return;
         }
 }
- 
- 
+
+    @Override
+    public void CheckForEmergency() {
+        if (surface != null && !surface.isSafeForMission()) {
+            if (surface.hasEmergency()) {
+                emergency.Emergency active = surface.getActiveEmergency(); // Assumes getter in Facilities
+                String emergencyType = active != null ? active.getType() : "Unknown Surface Emergency";
+
+                if (active instanceof emergency.RoverBreakdown) {
+                    throw new IllegalStateException(
+                        "Exploration FAILED! Rover Breakdown emergency detected at " + surface.getLocation() + 
+                        ". Exploration cannot start until rover is repaired."
+                    );
+                } else {
+                    throw new IllegalStateException(
+                        "Exploration FAILED! Surface hazard [" + emergencyType + "] active at " + surface.getLocation() + "."
+                    );
+                }
+            }
+            throw new IllegalStateException("Exploration FAILED! Mars Surface is currently not operational or damaged.");
+        }
+
+        if (comm != null && !comm.isSafeForMission()) {
+            throw new IllegalStateException(
+                "Exploration FAILED! Communication disruption at station [" + comm.getLocation() + "]. Transmission lines down."
+            );
+        }
+
+        System.out.println("Exploration emergency check passed: All surface telemetry and comms are fully clear.");
+    }
 }
 
 

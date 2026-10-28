@@ -24,7 +24,7 @@ public abstract class Mission {
     private int remainingSeconds;
     private MarsOps colony;
     
-    public Mission(int totalSecond, MarsOps colony){
+    public Mission(int totalSeconds, MarsOps colony){
         if (totalSeconds < 0) {
         throw new IllegalArgumentException(
             "Mission duration cannot be negative."
@@ -33,8 +33,12 @@ public abstract class Mission {
         this.scheduler = Executors.newScheduledThreadPool(1);
         this.remainingSeconds = totalSeconds;
         this.colony = colony;
+        this.totalSeconds = totalSeconds;
         
     }
+    
+    //mission will handle personnel, robots, facilities(locations), resources and equipment 
+    //environment and emergencies handled in facilities and then flagged in individual mission types
     
     //Status
     public MissionStatus getStatus() { return status; }
@@ -52,6 +56,7 @@ public abstract class Mission {
         roboticsCheck();
         communicationCheck();
         environmentCheck();
+        CheckForEmergency();
     } 
      public void setStatus(MissionStatus status){
         this.status = status;
@@ -205,5 +210,6 @@ public abstract class Mission {
         throw new IllegalStateException("Mission FAILED! Unavailable personnel!");
     }
     
-    
+    // emergency handling
+    public abstract void CheckForEmergency();
 }

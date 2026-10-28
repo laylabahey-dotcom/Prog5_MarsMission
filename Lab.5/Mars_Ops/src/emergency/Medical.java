@@ -76,4 +76,10 @@ public class Medical extends Emergency{
             System.out.println("Emergency unsolved! Medical supply allocation failed.");
         }
     
-}}
+}
+    @Override
+    public String getType() {
+        return this.type;
+    }
+
+}

@@ -96,6 +96,9 @@ public void resolveEmergency(){
     
     
 }
-
+    @Override
+    public String getType() {
+        return this.type;
+    }
 
 }

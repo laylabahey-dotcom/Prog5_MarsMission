@@ -22,6 +22,9 @@ public abstract class Emergency {
     public boolean isSolved() {
         return solved;
     }
+    
+    public abstract String getType();
+    
     public abstract void resolveEmergency();
     /*
     

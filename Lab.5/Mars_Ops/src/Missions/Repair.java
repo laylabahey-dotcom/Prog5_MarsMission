@@ -19,9 +19,10 @@ public class Repair extends Mission{
     private Person repairman;
     private Facilities repairTarget; //lab or power station
     private MarsOps colony;
+    private Communication_Stations comm;
     
-    public Repair(int totalSeconds, Person repairman, Robot repairBot, Equipment explorationEquipment[], 
-            Resources expRes[], Facilities repairTarget, MarsOps colony){ 
+    public Repair(int totalSeconds, Person repairman, Robot repairBot, Equipment repairEquipment[], 
+            Resources expRes[], Facilities repairTarget, MarsOps colony, Communication_Stations comm){ 
        
        super(totalSeconds, colony);  
        this.repairBot = repairBot;
@@ -40,6 +41,10 @@ public class Repair extends Mission{
        if (repairTarget == null) {
             throw new IllegalArgumentException("A repair mission must have a target facility.");
         }
+       if(repairTarget instanceof MarsSurface){
+           throw new IllegalArgumentException("Repairs cannot be conducted on martian Surface!");
+       }
+       this.comm = comm;
    }
    
    //for initial checks
@@ -149,7 +154,7 @@ public class Repair extends Mission{
 
     @Override
     public void environmentCheck() {
-        throw new UnsupportedOperationException("Not supported.");
+        throw new UnsupportedOperationException("Not supported."); 
     }
  
     
@@ -209,6 +214,40 @@ public class Repair extends Mission{
         if(!repairBot.getDamageStatus())
             failMission("Bot sustained damage!");
 }
+    @Override
+    public void CheckForEmergency() {
+        if (repairTarget != null && !repairTarget.isSafeForMission()) {
+            if (repairTarget.hasEmergency()) {
+                emergency.Emergency emergencyObj = repairTarget.getActiveEmergency();
+                String emergencyType = emergencyObj != null ? emergencyObj.getType() : "Active Facility Emergency";
+                
+                if (emergencyObj instanceof emergency.Fire) {
+                    throw new IllegalStateException(
+                        "Repair Mission FAILED! Fire emergency detected at target facility [" + repairTarget.getLocation() + "]."
+                    );
+                } else if (emergencyObj instanceof emergency.OxygenLeak) {
+                    throw new IllegalStateException(
+                        "Repair Mission FAILED! Oxygen Leak active at habitat [" + repairTarget.getLocation() + "]."
+                    );
+                } else {
+                    throw new IllegalStateException(
+                        "Repair Mission FAILED! Target facility [" + repairTarget.getLocation() + "] is unsafe due to: " + emergencyType
+                    );
+                }
+            } else {
+                throw new IllegalStateException(
+                    "Repair Mission FAILED! Target facility [" + repairTarget.getLocation() + "] is inoperable or damaged."
+                );
+            }
+        }
+        
+        if (comm != null && !comm.isSafeForMission()) {
+            throw new IllegalStateException("Repair Mission FAILED! Communication stations are disrupted.");
+        }
+        
+        System.out.println("Repair emergency check passed: Target facility status is verified.");
+    }
+
 
 
 }

@@ -110,7 +110,10 @@ public class OxygenLeak extends Emergency {
         }
     }
     
-    
+    @Override
+    public String getType() {
+        return this.type;
+    }
     
     
 }

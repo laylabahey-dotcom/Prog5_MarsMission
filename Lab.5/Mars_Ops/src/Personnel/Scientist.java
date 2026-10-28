@@ -6,6 +6,7 @@ public class Scientist extends Person {
     }
     @Override
     public boolean canPerform(String task) {
-        return task.equalsIgnoreCase("Research");
+        return task.equalsIgnoreCase("Research") ||
+                task.equalsIgnoreCase("Rescue");
     }
 }

@@ -132,17 +132,17 @@ public class Research extends Mission {
 
     @Override
     public void roboticsCheck() {
-        // Research uses no robot
+        throw new UnsupportedOperationException("Not supported."); 
     }
 
     @Override
     public void communicationCheck() {
-        // Research does not depend on communication
+        throw new UnsupportedOperationException("Not supported."); 
     }
 
     @Override
     public void environmentCheck() {
-        // Research happens inside the lab, so no environment restriction
+        throw new UnsupportedOperationException("Not supported."); 
     }
 
     // for during-mission checks
@@ -165,5 +165,27 @@ public class Research extends Mission {
     }
 }
 }
+
+    @Override
+    public void CheckForEmergency() {
+        if (lab != null && !lab.isSafeForMission()) {
+            if (lab.hasEmergency()) {
+                emergency.Emergency active = lab.getActiveEmergency();
+                String emergencyType = active != null ? active.getType() : "Unknown Surface Emergency";
+                
+                if (active instanceof emergency.Fire) {
+                    throw new IllegalStateException(
+                        "Research FAILED! Fire active in Lab. Research suspended."
+                    );
+                } else {
+                    throw new IllegalStateException(
+                        "Research FAILED! Lab hazard [" + emergencyType + "] active at " + lab.getLocation() + "."
+                    );
+                }
+            }
+            throw new IllegalStateException("Lab FAILED! Lab is currently not operational or damaged.");
+        }
+        System.out.println("Emergency check passed.");
+   }
 }
     

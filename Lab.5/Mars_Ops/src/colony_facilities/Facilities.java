@@ -1,5 +1,7 @@
 package colony_facilities;
 
+import emergency.Emergency;
+import Missions.Mission;
 import supply.Equipment;
 import supply.Resources;
 
@@ -9,6 +11,7 @@ public class Facilities {
     protected boolean opStatus;
     protected Resources resource;
     protected Equipment equipment;
+    protected Emergency activeEmergency;
 
     public Facilities(String location, int capacity, boolean opStatus, Resources resource, Equipment equipment) {
         this.location = location;
@@ -204,4 +207,37 @@ public class Facilities {
             System.out.println("Facility is already inoperable!");
         }
     }
-}
+
+
+
+    public void flagEmergency(Emergency e){ 
+        activeEmergency = e; 
+    }
+    
+    public void clearEmergency(){ 
+        activeEmergency = null; 
+    }
+    
+    public boolean hasEmergency(){ 
+        return activeEmergency != null; 
+    }
+    
+    public Emergency getActiveEmergency(){
+        return activeEmergency;
+    }
+
+    // one method every mission can call
+    public boolean isSafeForMission() {
+        if(opStatus && !hasEmergency()
+           && (equipment == null || !equipment.isDamaged())){
+            System.out.println("Facility is safe for mission!");
+            return true;
+        }
+        else {
+            System.out.println("Facility unsafe for mission!");
+            return false;
+        }
+    }
+    
+    
+  }  

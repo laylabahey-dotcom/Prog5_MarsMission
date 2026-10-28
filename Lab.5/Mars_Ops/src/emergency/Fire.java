@@ -26,6 +26,7 @@ public class Fire extends Emergency {
         this.fireResponder = fireResponder;
         this.medicalResponder = medicalResponder;
         
+        
         //immediate fire impact
         if(targetLab != null){
             targetLab.setOpStatus(false);//unavailable lab
@@ -97,6 +98,11 @@ public class Fire extends Emergency {
             this.solved = true;
            System.out.println("Fire at " + location + " has been successfully resolved!"); 
         }
+    }
+
+    @Override
+    public String getType() {
+        return this.type;
     }
     
 }
