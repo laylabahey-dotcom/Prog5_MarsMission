@@ -22,7 +22,7 @@ public abstract class Mission {
     
     private final ScheduledExecutorService scheduler;
     private int remainingSeconds;
-    private MarsOps colony;
+    protected MarsOps colony;
     
     public Mission(int totalSecond, MarsOps colony){
         if (totalSeconds < 0) {
