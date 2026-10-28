@@ -37,7 +37,8 @@ public class OxygenLeak extends Emergency {
                 afterO2Sub = availableO2;// -ve after Sub
             }
             if(afterO2Sub > 0){
-                resource.oxygenSub(afterO2Sub);//subtract O2 from target habitat
+                //subtract O2 from target habitat
+                targetHabitat.removeResources("oxygen",afterO2Sub);
                 System.out.println("WARNING! Oxygen leak triggered! " + afterO2Sub + " units lost from " + location);
                 
             }
@@ -76,7 +77,7 @@ public class OxygenLeak extends Emergency {
         if(success){
             engineer.setLocation(targetHabitat.getLocation());
             
-            //if habitat equipment is causing the O2 leak; repair using Equipment's methid
+            //if habitat equipment is causing the O2 leak; repair using Equipment's method
             Equipment habitatEquipment = targetHabitat.getEquipment();
             if(habitatEquipment != null && habitatEquipment.isDamaged()){
                 habitatEquipment.repairEquipment();
@@ -102,7 +103,7 @@ public class OxygenLeak extends Emergency {
                 
             }
             if(extraSub > 0 ){
-                resource.oxygenSub(extraSub);
+                targetHabitat.removeResources("oxygen",extraSub);
                 System.out.println("Emergency at " + location + " went unresolved! Additional " + extraSub + " units of oxygen lost.");
                 
             }

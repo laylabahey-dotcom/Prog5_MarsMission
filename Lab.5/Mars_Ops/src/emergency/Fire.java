@@ -48,7 +48,7 @@ public class Fire extends Emergency {
                    
                 }
                 if(actualSub > 0){
-                    resource.oxygenSub(actualSub);
+                    targetLab.removeResources("oxygen",actualSub);
                     System.out.println("WARNING: Fire consumed " + actualSub + " units of oxygen in " + location);
                 }
             }
