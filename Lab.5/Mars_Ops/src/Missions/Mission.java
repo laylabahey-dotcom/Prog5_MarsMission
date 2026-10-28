@@ -53,8 +53,9 @@ public abstract class Mission {
         communicationCheck();
         environmentCheck();
     } 
-        
-    
+     public void setStatus(MissionStatus status){
+        this.status = status;
+                 }
     // start a mission -> check for activity of the mission
     public void startMission(){
         if(status != MissionStatus.PENDING){

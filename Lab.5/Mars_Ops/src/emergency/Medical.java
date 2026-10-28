@@ -8,11 +8,11 @@ import supply.*;
 
 public class Medical extends Emergency{
     private MedicalOfficer doctor;
-    private MedicalOfficer patient;
+    private Person patient;
     private Facilities targetFacility; 
     private Resources reqMedSupplies;
     
-    public Medical(String location, MedicalOfficer patient, MedicalOfficer doctor, Facilities targetFacility, Resources reqMedSupplies, MarsOps colony){
+    public Medical(String location, Person patient, MedicalOfficer doctor, Facilities targetFacility, Resources reqMedSupplies, MarsOps colony){
         
         super("Medical Emergency", location, colony);
         

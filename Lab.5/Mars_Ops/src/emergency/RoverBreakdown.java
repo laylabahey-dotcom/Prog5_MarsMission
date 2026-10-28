@@ -30,7 +30,8 @@ public class RoverBreakdown extends Emergency {
             System.out.println("WARNING! Rover breakdown at " + location);
         }
         if(targetMission != null){
-           // targetMission. update mission status to suspended
+           // update mission status to failed
+           targetMission.setStatus(Mission.MissionStatus.FAILED);
             System.out.println("WARNING: Mission has been suspended due to rover failure."); 
             
         }
@@ -83,8 +84,8 @@ public void resolveEmergency(){
             
             // Resume the mission
             if(targetMission != null){
-                targetMission.setStatus("Active");
-                System.out.println("Mission " + targetMission.getName() + " has resumed operations.");
+                targetMission.setStatus(Mission.MissionStatus.IN_PROGRESS);
+                System.out.println("Mission has resumed operations.");
             }
             
             this.solved = true;
