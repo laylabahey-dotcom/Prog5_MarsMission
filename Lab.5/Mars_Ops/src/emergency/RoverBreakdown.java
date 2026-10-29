@@ -26,7 +26,7 @@ public class RoverBreakdown extends Emergency {
         //immediate breakdown
         if (targetRover != null) {
             //op = false
-            targetRover.setDamageStatus(false);
+            targetRover.setDamageStatus(true);
             System.out.println("WARNING! Rover breakdown at " + location);
         }
         if (targetMission != null) {
@@ -45,7 +45,7 @@ public class RoverBreakdown extends Emergency {
             return;
         }
 
-        if ((engineer != null && !engineer.available()) || (robot != null && !robot.isAvailable())) {
+        if (engineer == null || !engineer.available() || robot == null || !robot.isAvailable()) {
             System.out.println("Emergency unresolved! Required repair personnel or robot are busy/unavailable.");
             return;
         }
@@ -93,6 +93,12 @@ public class RoverBreakdown extends Emergency {
     
     
 }
+    public void checkUnresolved() {
+        if (!solved) {
+            System.out.println("Rover breakdown at " + location + " remains unresolved. Rover is still stranded.");
+        }
+    }
+    
     @Override
     public String getType() {
         return this.type;

@@ -76,6 +76,11 @@ public class Medical extends Emergency {
         }
     
 }
+    public void checkUnresolved() {
+        if (!solved && patient != null) { 
+            System.out.println("Emergency at " + location + " went unresolved!");
+        }
+    }
     @Override
     public String getType() {
         return this.type;

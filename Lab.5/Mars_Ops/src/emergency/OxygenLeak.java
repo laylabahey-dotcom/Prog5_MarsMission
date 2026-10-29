@@ -77,8 +77,8 @@ public class OxygenLeak extends Emergency {
             return;
         }
         //check responders
-        if (engineer == null || !engineer.available() || !robot.isAvailable() || robot == null) {
-            System.out.println("Emergency unresoved! Required resolvers are unavailable.");
+        if (engineer == null || !engineer.available() || robot == null || !robot.isAvailable() ) {
+            System.out.println("Emergency unresolved! Required resolvers are unavailable.");
             return;
         }
         //check colony resources
