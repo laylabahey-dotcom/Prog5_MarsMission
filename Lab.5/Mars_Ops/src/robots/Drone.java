@@ -7,8 +7,9 @@ public class Drone extends Robot {
     }
 
     @Override
-    public void performTask() {
-        System.out.println("Performing aerial reconnaissance!");
+    public boolean canPreform(String task) {
+        return task.equalsIgnoreCase("Exploration") ||
+                task.equalsIgnoreCase("Rescue");
     }
 
 }

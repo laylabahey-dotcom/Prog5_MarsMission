@@ -7,8 +7,9 @@ public class ExplorationRover extends Robot {
     }
 
     @Override
-    public void performTask() {
-        System.out.println("Exploring the Martian surface!");
+    public boolean canPreform(String task) {
+        return task.equalsIgnoreCase("Exploration") ||
+                task.equalsIgnoreCase("Rescue");
     }
 
     public void breakDown() {

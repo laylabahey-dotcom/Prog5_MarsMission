@@ -40,7 +40,7 @@ public abstract class Robot {
 
     }
 
-    public abstract void performTask();//diff for every robot
+    public abstract boolean canPreform(String task);//diff for every robot
 
     //getters
     public int getBatteryLevel() {

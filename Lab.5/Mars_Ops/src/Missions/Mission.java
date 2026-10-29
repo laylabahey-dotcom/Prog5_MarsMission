@@ -239,6 +239,10 @@ public abstract class Mission {
         throw new IllegalStateException("Mission FAILED! Unavailable personnel!");
     }
     
+    public void unsuitableRobot(){
+        throw new IllegalStateException("Mission FAILED! Unsuitable robot!");
+    }
+    
     // emergency handling
     public abstract void CheckForEmergency();
 }

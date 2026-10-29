@@ -26,12 +26,6 @@ public class Repair extends Mission {
         
        super(totalTime, colony);  
        this.repairBot = repairBot;
-       if (!(repairBot instanceof RepairRobot)) {
-            throw new IllegalArgumentException("Mission must have a repair rover!");
-       } else if (repairBot instanceof RepairRobot) {
-            System.out.println("Conducting reparations in facilities!");
-       }
-
        this.repairman = repairman;
        people.add(repairman);
        this.explorationEquipment = repairEquipment;
@@ -128,6 +122,10 @@ public class Repair extends Mission {
 
     @Override
     public void roboticsCheck() {
+        if(!(repairBot.canPreform(requiredSkill()))){
+            unsuitableRobot();
+            return;
+        }
         if (repairBot.getBatteryLevel() <= 20) {
             insufficientBattery();
             return;

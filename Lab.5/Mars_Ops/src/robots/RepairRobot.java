@@ -7,8 +7,8 @@ public class RepairRobot extends Robot {
     }
 
     @Override
-    public void performTask() {
-        System.out.println("Repairing damaged equipment!");
+    public boolean canPreform(String task) {
+        return task.equalsIgnoreCase("Repair");
     }
 
 }

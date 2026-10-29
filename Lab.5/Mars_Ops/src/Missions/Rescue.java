@@ -127,6 +127,10 @@ public class Rescue extends Mission {
 
     @Override
     public void roboticsCheck() {
+        if(!(drone.canPreform(requiredSkill()))){
+            unsuitableRobot();
+            return;
+        }
         if (drone == null) {
             robotUnavailable();
             return;

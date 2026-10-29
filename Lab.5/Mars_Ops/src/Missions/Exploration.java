@@ -25,21 +25,14 @@ public class Exploration extends Mission {
 
         super(totalTime, colony);
         this.r = r;
-       if(r instanceof ExplorationRover){
-           System.out.println("Conducting land exploration with Exploration Rover!");
-       }
-       if(r instanceof Drone){
-           System.out.println("Conducting areial exploration with a drone!");
-       }
-       
-       this.surface = surface;
-       this.driver = driver;
-       people.add(driver);
-       this.explorationEquipment = explorationEquipment;
-       this.expRes = expRes;
-       this.colony = colony;
-       this.comm = comm;
-       this.missionEnvironment = missionEnvironment;
+        this.surface = surface;
+        this.driver = driver;
+        people.add(driver);
+        this.explorationEquipment = explorationEquipment;
+        this.expRes = expRes;
+        this.colony = colony;
+        this.comm = comm;
+        this.missionEnvironment = missionEnvironment;
       
    }
    
@@ -126,6 +119,16 @@ public class Exploration extends Mission {
 
     @Override
     public void roboticsCheck() {
+        if(!(r.canPreform(requiredSkill()))){
+            unsuitableRobot();
+            return;
+        }
+        if(r instanceof ExplorationRover){
+           System.out.println("Conducting land exploration with Exploration Rover!");
+       }
+       if(r instanceof Drone){
+           System.out.println("Conducting areial exploration with a drone!");
+       }
         if (r.getBatteryLevel() <= 20) {
             insufficientBattery();
             return;
