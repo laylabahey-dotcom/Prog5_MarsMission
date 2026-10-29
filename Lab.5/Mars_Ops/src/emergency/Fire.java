@@ -34,7 +34,7 @@ public class Fire extends Emergency {
             //damaged equipment
             Equipment labEquipment = targetLab.getEquipment();
             if (labEquipment != null) {
-                labEquipment.isDamaged();
+                labEquipment.setDamaged(true);
             }
             //o2 increase
             if (targetLab.getResource() != null) {
@@ -69,7 +69,7 @@ public class Fire extends Emergency {
             //damaged equipment
             Equipment labEquipment = targetLab.getEquipment();
             if (labEquipment != null) {
-                labEquipment.isDamaged();
+                labEquipment.setDamaged(true);
             }
             //o2 increase
             if (targetLab.getResource() != null) {
@@ -128,6 +128,27 @@ public class Fire extends Emergency {
             targetLab.setOpStatus(true);
             this.solved = true;
             System.out.println("Fire at " + location + " has been successfully resolved!");
+        }
+    }
+    public void checkUnresolved(){
+        if(!solved && targetLab != null && targetLab.getResource() != null){
+            Resources resource = targetLab.getResource();
+            int availableO2 = resource.getO2_count();
+            
+            //Sub same leak amount again
+            
+            int addLossO2 = fireLevel * 2;//penalty
+            int actualSub = addLossO2;
+            if (availableO2 < addLossO2 ) {
+                actualSub = availableO2;
+
+            }
+            if (actualSub > 0) {
+                targetLab.removeResources("oxygen", actualSub);
+                System.out.println("Emergency at " + location + " went unresolved! Additional " + actualSub + " units of oxygen lost.");
+
+            }
+            
         }
     }
 
