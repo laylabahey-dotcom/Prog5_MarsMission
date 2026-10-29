@@ -54,7 +54,7 @@ public class Main {
             System.out.println("Exception: " + e.getMessage());
         }
         if (validMission.getStatus() == Mission.MissionStatus.COMPLETED) {
-            System.out.println("Scenario 1 Passed!\n");
+            System.out.println("Scenario 1 Passed! Successful exploration mission conducted!\n");
         } else {
             System.out.println("Scenario 1 Failed! " + validMission.getFailureReason() + "\n");
         }
