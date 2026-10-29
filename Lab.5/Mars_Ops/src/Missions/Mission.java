@@ -9,7 +9,8 @@ import main.*;
 
 public abstract class Mission {
     public enum MissionStatus { PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, FAILED }
-   
+    
+    public static int activeMissionCount = 0;
     private boolean activeSlotClaimed = false;
     private int totalTime;
     
@@ -83,6 +84,7 @@ public abstract class Mission {
  
         System.out.println("Mission authorised.");
         colony.setActiveMission(this);
+        activeMissionCount++;
         activeSlotClaimed = true;
         status = MissionStatus.IN_PROGRESS;   // duration counting starts here
         if (remainingTime == 0) {
