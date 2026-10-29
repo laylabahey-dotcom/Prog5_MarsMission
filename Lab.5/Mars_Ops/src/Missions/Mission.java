@@ -1,55 +1,42 @@
+
 package Missions;
-
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import Personnel.*;
+import robots.*;
 import main.*;
-import robots.*; //k
 
-//IM HESITANT TO DELETE THINGS, I HAVE A ZIP FILE OF THE CODE BEFORE MOD 
-//BUT I WILL KEEP DELETING STUFF FROM UR CLASSES TO A MINIMUM, COMMENTS INSTEAD
+
 
 public abstract class Mission {
-
-    public enum MissionState {
-        PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, FAILED
-    }
+    public enum MissionStatus { PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, FAILED }
     
-    private int duration;
-    private int timeElapsed;
-    private MissionState state;
-    private String failureReason;
+    public static int activeMissionCount = 0;
+    private boolean activeSlotClaimed = false;
+    private int totalTime;
     
-
-    // no need for public static int activeMissionCount = 0; tracked by MarsOps
-    /*private boolean activeSlotClaimed = false;
-    private int totalSeconds;
-
     private MissionStatus status = MissionStatus.PENDING;
-    private String failureReason;*/
+    private String failureReason;
 
     protected final List<Person> people = new ArrayList<>();
     protected final List<Robot> robots = new ArrayList<>();
-
-    /*private final ScheduledExecutorService scheduler;
-    private int remainingSeconds;*/ //dont need this either
     
+    private final ScheduledExecutorService scheduler;
+    private int remainingTime;
     private MarsOps colony;
     
-    public Mission(int duration, MarsOps colony){
-        if (duration < 0) {
-            throw new IllegalArgumentException(
-                    "Mission duration cannot be negative."
-            );
-        }
-        this.duration=duration;
-        this.timeElapsed=0;
-        this.colony=colony;
-        this.state=MissionState.FAILED;
-        
-        /*this.scheduler = Executors.newScheduledThreadPool(1);
-        this.remainingSeconds = totalSeconds;
+    public Mission(int totalTime, MarsOps colony){
+        if (totalTime < 0) {
+        throw new IllegalArgumentException(
+            "Mission duration cannot be negative."
+        );
+    }
+        this.scheduler = Executors.newScheduledThreadPool(1);
+        this.remainingTime = totalTime;
         this.colony = colony;
-        this.totalSeconds = totalSeconds; eb2o delete this stuff im just scared to  */
+        this.totalTime = totalTime;
         
     }
     
@@ -57,49 +44,14 @@ public abstract class Mission {
     //environment and emergencies handled in facilities and then flagged in individual mission types
     
     //Status
-    public MissionState getStatus() {
-        return state;
-    }
-    
-    public void setState(MissionState state) {
-        this.state=state;
-    }
+    public MissionStatus getStatus() { return status; }
+    public String getFailureReason() { return failureReason; }
+    public void setStatus(MissionStatus status) { this.status = status; }
 
-    public String getFailureReason() {
-        return failureReason;
-    }
     
-    public void setFailureReason(String reason) {
-        this.failureReason=reason;
-    }
-    
-    public int getDuration() {
-        return duration;
-    }
-    
-    public int getTimeElapsed() {
-        return timeElapsed;
-    }
-    
-    public void incrementTimeElapsed(int amount) {
-        this.timeElapsed+=amount;
-    }
-    
-    public boolean isFinished(){
-        return state==MissionState.COMPLETED||state==MissionState.FAILED;
-    }
-    
-    public void addPerson(Person p) {
-        people.add(p); //add new element to array list
-    }
-    
-    public void addRobot(Robot r) {
-        robots.add(r);
-    }
-
     //personnel skill
     public abstract String requiredSkill();
-
+    
     private void runChecks() {
         personnelCapabilityCheck();
         personnelPerformanceCheck();
@@ -111,16 +63,13 @@ public abstract class Mission {
         environmentCheck();
         CheckForEmergency();
     } 
-    /*public void setStatus(MissionStatus status){
-        this.status = status;
-    } dont need anymore*/
 
-    // DO NOT DELETE start a mission -> check for activity of the missionDO NOT DELETE
-    /*public void startMission() {
-        if (state != MissionState.PENDING) {
+    // start a mission -> check for activity of the mission
+    public void startMission() {
+        if (status != MissionStatus.PENDING) {
             throw new IllegalStateException("This mission is already assigned.");
         }
-        if (activeMissionCount >= 1) {
+        if (colony.getActiveMission() != null) {
             fail("Mission FAILED. Already have an assigned mission. This mission cannot be authorised.");
             return;
         }
@@ -130,55 +79,88 @@ public abstract class Mission {
                 return;
             }
         }
-
+ 
         try {
             runChecks();
         } catch (IllegalStateException e) {
             fail(e.getMessage());
             return;
         }
-
+ 
         System.out.println("Mission authorised.");
-        activeMissionCount++;
+        colony.setActiveMission(this);
         activeSlotClaimed = true;
         status = MissionStatus.ASSIGNED;
         for (Person p : people) {
             p.setAvailable(false);
         }
-        startTimer();
-    }NEEED THIS LATER DO NOT DELETE DO NOT DELETE DO NOT DELETE*/
-
-    //get the failure reason
-    /*private void fail(String reason) {
-        if (state == MissionState.COMPLETED
-                || state == MissionState.FAILED) {
-            return;
+        for (Robot r : robots) {
+            r.setAvailable(false);
         }
-        state = MissionState.FAILED;
-        failureReason = reason;
-        System.out.println(reason);
-        cleanUp();
-    } no longer nead this.. handled in failMission and isFinished*/
-
-    protected void failMission(String reason) {
-        if(isFinished()) return;
-        state=MissionState.FAILED;
-        failureReason=reason;
-        System.out.println(reason);
-        cleanUp();
+        status = MissionStatus.IN_PROGRESS;   // duration counting starts here
+        if (remainingTime == 0) {
+            endMission();
+        }
     }
 
-    /*private void startTimer() {
-        state = MissionState.IN_PROGRESS;
-        if (remainingSeconds == 0) {
-            endMission();
+
+    //get the failure reason
+    private void fail(String reason) {
+    if (status == MissionStatus.COMPLETED ||
+        status == MissionStatus.FAILED) {
+        return;
+    }
+    status = MissionStatus.FAILED;
+    failureReason = reason;
+    System.out.println(reason);
+    cleanUp();
+}
+    
+    protected void failMission(String reason) {
+        fail(reason);
+    }
+    public void reject(String reason) {
+        fail(reason);
+    }
+
+    
+    
+    public void tick() {
+        if (status != MissionStatus.IN_PROGRESS) {
             return;
         }
-        scheduler.scheduleAtFixedRate(() -> {
-            if (state != MissionState.IN_PROGRESS) {
-                scheduler.shutdown();
-                return;
+        try {
+            checkMissionContinues();
+            if (status != MissionStatus.IN_PROGRESS) {
+                return;   // failMission() ended it
             }
+            CheckForEmergency();
+        } catch (IllegalStateException e) {
+            fail(e.getMessage());
+            return;
+        }
+        if (status != MissionStatus.IN_PROGRESS) {
+            return;
+        }
+        remainingTime--;
+        System.out.println("Time remaining: " + remainingTime);
+        if (remainingTime <= 0) {
+            endMission();
+        }
+    }
+
+    
+    
+    public void advanceTime(int units) {
+        if (status != MissionStatus.IN_PROGRESS) {
+            return;
+        }
+
+        for (int i = 0; i < units; i++) {
+            if (status != MissionStatus.IN_PROGRESS) {
+                break;
+            }
+
             try {
                 checkMissionContinues();
             } catch (IllegalStateException e) {
@@ -186,95 +168,86 @@ public abstract class Mission {
                 return;
             }
 
-            if (remainingSeconds > 0) {
-                remainingSeconds--;
-                System.out.println(
-                        "Time remaining: " + remainingSeconds + "s"
-                );
+            if (remainingTime > 0) {
+                remainingTime--;
+                System.out.println("Time remaining: " + remainingTime + "s");
             }
 
-            if (remainingSeconds == 0) {
+            if (remainingTime == 0) {
                 endMission();
+                break;
             }
-        }, 1, 1, TimeUnit.SECONDS);
-    }replaced with incrementTimeElapsed*/
-
+        }
+    }
+    
+    
     public void endMission() {
-        if (state != MissionState.IN_PROGRESS) {
+        if (status != MissionStatus.IN_PROGRESS) {
             return;
         }
-        state = MissionState.COMPLETED;
+        status = MissionStatus.COMPLETED;
         System.out.println("Mission completed!");
         cleanUp();
-    }
-
+}
+    
     private void cleanUp() {
-        for (Person p : people) {
-            p.setAvailable(true);
+        if (activeSlotClaimed) {
+            for (Person p : people) {
+                p.setAvailable(true);
+            }
+            activeMissionCount--;
+            activeSlotClaimed = false;
         }
-        for(Robot r:robots) {
-            r.setAvailable(true); //added robots loop
-        }
-    }
-           
-           
+        scheduler.shutdownNow();
+}
 
     // initial checks
     public abstract void personnelCapabilityCheck();
-
     public abstract void personnelPerformanceCheck();
-
     public abstract void personnelavailabilityCheck();
-
     public abstract void resourceCheck();
-
     public abstract void equipmentCheck();
-
     public abstract void roboticsCheck();
-
     public abstract void communicationCheck();
-
     public abstract void environmentCheck();
 
     //during mission checks
     public abstract void checkMissionContinues();
     
-
-
+    
     //Mission Failure Warnings
-    public void insufficientResources() {
+    public void insufficientResources(){
         throw new IllegalStateException("Mission FAILED! Insufficient Resources!");
     }
-
-    public void equipmentFailure() {
+    
+    public void equipmentFailure(){
         throw new IllegalStateException("Mission FAILED! Equipment failure!");
     }
-
-    public void unsuitableAgent() {
+    
+    public void unsuitableAgent(){
         throw new IllegalStateException("Mission FAILED! Unsuitable agent!");
     }
-
+    
     public void communicationDisruption() {
         throw new IllegalStateException("Mission FAILED! Communication disrupted!");
-    }
-
-    public void insufficientBattery() {
+}
+    
+    public void insufficientBattery(){
         throw new IllegalStateException("Mission FAILED! Insufficient battery!");
     }
-
-    public void damagedRobot() {
+    
+    public void damagedRobot(){
         throw new IllegalStateException("Mission FAILED! Robot is damaged!");
     }
-
-    public void robotUnavailable() {
+    
+    public void robotUnavailable(){
         throw new IllegalStateException("Mission FAILED! Robot is unavailable!");
     }
-
-    public void unavailablePersonnel() {
+    
+    public void unavailablePersonnel(){
         throw new IllegalStateException("Mission FAILED! Unavailable personnel!");
     }
     
     // emergency handling
     public abstract void CheckForEmergency();
 }
-//theres still stuff to change im tired tho

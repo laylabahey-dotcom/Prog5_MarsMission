@@ -49,6 +49,41 @@ public class MarsOps {
     public void addFacility(Facilities facility) {
         this.facilities.add(facility);
     }
+    
+    public Mission getActiveMission() {
+        if (activeMission != null && isFinished(activeMission)) {
+            activeMission = null;
+        }
+        return activeMission;
+    }
+ 
+    // called by Mission when it is authorised
+    public void setActiveMission(Mission m) {
+        this.activeMission = m;
+    }
+ 
+    // called by Mission when it completes or fails
+    public void clearActiveMission(Mission m) {
+        if (activeMission == m) {
+            activeMission = null;
+        }
+    }
+ 
+    private boolean isFinished(Mission m) {
+        return m.getStatus() == Mission.MissionStatus.COMPLETED
+                || m.getStatus() == Mission.MissionStatus.FAILED;
+    }
+    
+    public boolean submitMission(Mission newMission) {
+        if (getActiveMission() != null) {
+            newMission.reject("Mission FAILED. Another mission is already active.");
+            return false;
+        }
+        newMission.startMission();   // runs all checks; becomes FAILED with a reason if any fail
+        return newMission.getStatus() != Mission.MissionStatus.FAILED;
+    }
+
+
 
     public int getTotalResources(String name) {
         int total = 0;
@@ -100,16 +135,6 @@ public class MarsOps {
     public Environment getEnvironment(){
         return environment;
     }
-
-    public Mission getActiveMission() {
-        if(activeMission!=null && activeMission.isFinished()) {
-            activeMission=null;
-        } return activeMission;
-    }
-    
-    public void submitMission(Mission newMission) {
-        if(this.activeMission!=null &&this)
-    }
     
     private int getFacilityCount(Facilities f, String name) {
         supply.Resources r = f.getResource();
@@ -135,4 +160,8 @@ public class MarsOps {
                 0;
         };
     }
+
+
+    
+    
 }
