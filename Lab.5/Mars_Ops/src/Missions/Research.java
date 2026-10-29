@@ -24,9 +24,6 @@ public class Research extends Mission {
         
         
         this.scientist = scientist;
-        if(!(scientist instanceof Scientist)){
-            throw new IllegalStateException("Mission rejected! Research must be conducted by a scientist!");
-        }
         this.scientificEquipment = scientificEquipment;
         this.scientificResources = scientificResources;
         if(!(lab instanceof Laboratory)){

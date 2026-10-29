@@ -25,9 +25,6 @@ public class Exploration extends Mission {
 
         super(totalTime, colony);
         this.r = r;
-        if (!(r instanceof ExplorationRover) && !(r instanceof Drone)) {
-            throw new IllegalArgumentException("Mission must have an exploration rover or a drone!");
-        }
        if(r instanceof ExplorationRover){
            System.out.println("Conducting land exploration with Exploration Rover!");
        }
