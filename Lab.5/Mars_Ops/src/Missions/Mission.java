@@ -1,9 +1,6 @@
 
 package Missions;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import Personnel.*;
 import robots.*;
 import main.*;
@@ -23,7 +20,6 @@ public abstract class Mission {
     protected final List<Person> people = new ArrayList<>();
     protected final List<Robot> robots = new ArrayList<>();
     
-    private final ScheduledExecutorService scheduler;
     private int remainingTime;
     private MarsOps colony;
     
@@ -33,7 +29,6 @@ public abstract class Mission {
             "Mission duration cannot be negative."
         );
     }
-        this.scheduler = Executors.newScheduledThreadPool(1);
         this.remainingTime = totalTime;
         this.colony = colony;
         this.totalTime = totalTime;
@@ -191,7 +186,6 @@ public abstract class Mission {
             activeMissionCount--;
             activeSlotClaimed = false;
         }
-        scheduler.shutdownNow();
 }
 
     // initial checks
