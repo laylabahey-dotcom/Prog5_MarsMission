@@ -14,8 +14,8 @@ import main.*;
 public class Repair extends Mission {
 
     private final Robot repairBot;
-    private Equipment explorationEquipment[];
-    private Resources expRes[];
+    private Equipment repairEquipment[];
+    private Resources repRes[];
     private Person repairman;
     private Facilities repairTarget; // lab or power station
     private MarsOps colony;
@@ -28,8 +28,8 @@ public class Repair extends Mission {
        this.repairBot = repairBot;
        this.repairman = repairman;
        people.add(repairman);
-       this.explorationEquipment = repairEquipment;
-       this.expRes = expRes;
+       this.repairEquipment = repairEquipment;
+       this.repRes = expRes;
        this.repairTarget = repairTarget;
        if (repairTarget == null) {
             throw new IllegalArgumentException("A repair mission must have a target facility.");
@@ -78,12 +78,12 @@ public class Repair extends Mission {
 
     @Override
     public void resourceCheck() {
-        if (expRes == null || expRes.length == 0) {
+        if (repRes == null || repRes.length == 0) {
             insufficientResources();
             return;
         }
         int reqParts = 0, reqBattery = 0;
-        for (Resources resource : expRes) {
+        for (Resources resource : repRes) {
             if (resource != null) {
                 reqParts += resource.getSpare_count();
                 reqBattery += resource.getBattery_units_count();
@@ -107,11 +107,11 @@ public class Repair extends Mission {
 
     @Override
     public void equipmentCheck() {
-        if (explorationEquipment == null || explorationEquipment.length == 0) {
+        if (repairEquipment == null || repairEquipment.length == 0) {
             equipmentFailure();
             return;
         }
-        for (Equipment e : explorationEquipment) {
+        for (Equipment e : repairEquipment) {
             if (e.isDamaged()) {
                 equipmentFailure();
                 return;
@@ -198,7 +198,7 @@ public class Repair extends Mission {
         if (!(repairman.available())) {
             failMission("Agent is unavailable.");
         }
-        for (Equipment e : explorationEquipment) {
+        for (Equipment e : repairEquipment) {
             if (e.isDamaged()) {
                 failMission("Equipment is damaged!");
             }
