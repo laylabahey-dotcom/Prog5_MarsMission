@@ -10,13 +10,13 @@ import supply.*;
 import main.*;
 
 public class Research extends Mission {
-    private Person scientist[];
+    private Person scientist;
     private Facilities lab;
     private Equipment scientificEquipment[];
     private Resources scientificResources[];
     private MarsOps colony;
 
-    public Research(int totalSeconds, Person scientist[],
+    public Research(int totalSeconds, Person scientist,
             Equipment scientificEquipment[],
             Resources scientificResources[], Facilities lab, MarsOps colony) {
 
@@ -24,8 +24,8 @@ public class Research extends Mission {
         
         
         this.scientist = scientist;
-        for (Person s : scientist) {
-            people.add(s);
+        if(!(scientist instanceof Scientist)){
+            throw new IllegalStateException("Mission rejected! Research must be conducted by a scientist!");
         }
         this.scientificEquipment = scientificEquipment;
         this.scientificResources = scientificResources;

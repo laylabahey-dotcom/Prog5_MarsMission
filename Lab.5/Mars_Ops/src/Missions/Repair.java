@@ -21,10 +21,10 @@ public class Repair extends Mission {
     private MarsOps colony;
     private Communication_Stations comm;
     
-    public Repair(int totalSeconds, Person repairman, Robot repairBot, Equipment repairEquipment[], 
+    public Repair(int totalTime, Person repairman, Robot repairBot, Equipment repairEquipment[], 
             Resources expRes[], Facilities repairTarget, MarsOps colony, Communication_Stations comm){ 
         
-       super(totalSeconds, colony);  
+       super(totalTime, colony);  
        this.repairBot = repairBot;
        if (!(repairBot instanceof RepairRobot)) {
             throw new IllegalArgumentException("Mission must have a repair rover!");

@@ -19,11 +19,11 @@ public class Exploration extends Mission {
     private MarsSurface surface;
     private MarsOps colony;
 
-    public Exploration(int totalSeconds, Person driver, Robot r, Equipment explorationEquipment[],
+    public Exploration(int totalTime, Person driver, Robot r, Equipment explorationEquipment[],
             Communication_Stations comm, Resources expRes[], Environment missionEnvironment,
             MarsOps colony, MarsSurface surface) {
 
-        super(totalSeconds, colony);
+        super(totalTime, colony);
         this.r = r;
         if (!(r instanceof ExplorationRover) && !(r instanceof Drone)) {
             throw new IllegalArgumentException("Mission must have an exploration rover or a drone!");
