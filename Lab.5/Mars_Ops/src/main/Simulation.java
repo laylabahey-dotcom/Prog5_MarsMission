@@ -6,6 +6,7 @@ import environment.*;
 import robots.*;
 import colony_facilities.*;
 import emergency.*;
+import Missions.*;
 import supply.*;
 
 public class Simulation {
@@ -61,6 +62,10 @@ public class Simulation {
                     if (r.getBatteryLevel() > 0) {
                         r.setBatteryLevel(r.getBatteryLevel() - 2);
                         System.out.println("Robot Battery Decreased.");
+                    } else {
+                        if(activeMission!=null) {
+                            activeMission.setState(MissionState.FAILED);
+                        }
                     }
                 }
             }

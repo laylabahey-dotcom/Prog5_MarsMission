@@ -4,10 +4,16 @@ import java.util.*;
 import Personnel.*;
 import robots.*;
 import colony_facilities.*;
+import environment.*;
+import Missions.*;
+import emergency.Emergency;
 
 public class MarsOps {
 
     private String colonyName;
+    private Mission activeMission;
+    
+    private final Environment environment=new Environment();
 
     private List<Person> crewMembers;
     private List<Robot> robots;
@@ -90,7 +96,21 @@ public class MarsOps {
         }
         return remainder == 0;
     }
+    
+    public Environment getEnvironment(){
+        return environment;
+    }
 
+    public Mission getActiveMission() {
+        if(activeMission!=null && activeMission.isFinished()) {
+            activeMission=null;
+        } return activeMission;
+    }
+    
+    public void submitMission(Mission newMission) {
+        if(this.activeMission!=null &&this)
+    }
+    
     private int getFacilityCount(Facilities f, String name) {
         supply.Resources r = f.getResource();
         if (r == null) {
