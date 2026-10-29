@@ -13,6 +13,16 @@
             <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/main/Simulation.java</file>
             <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/colony_facilities/MarsSurface.java</file>
             <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/main/Main.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/environment/Environment.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/Missions/Exploration.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/robots/Drone.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/Missions/Rescue.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/Missions/Research.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/Personnel/Engineer.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/Personnel/Person.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/robots/Robot.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/robots/RepairRobot.java</file>
+            <file>file:/home/layla-bahey/NetBeansProjects/Prog5_MarsMission/Lab.5/Mars_Ops/src/robots/ExplorationRover.java</file>
         </group>
     </open-files>
 </project-private>

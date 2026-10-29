@@ -4,10 +4,12 @@ public class Environment {
 
     private boolean dustStorm;
     private boolean commDisruption;
+    private boolean surface;
 
     public Environment() {
         this.dustStorm = false;//mentioned initial
         this.commDisruption = false;
+        this.surface = false;
     }
 
     public void triggerDustStorm() {

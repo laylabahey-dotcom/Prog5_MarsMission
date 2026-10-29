@@ -30,6 +30,7 @@ public class Research extends Mission {
             throw new IllegalStateException("Research must be conducted in a laboratory!");
         }
         this.lab = lab;
+        this.colony = colony;
     }
 
     // for initial checks
