@@ -40,6 +40,9 @@ public class Exploration extends Mission {
        people.add(driver);
        this.explorationEquipment = explorationEquipment;
        this.expRes = expRes;
+       this.colony = colony;
+       this.comm = comm;
+       this.missionEnvironment = missionEnvironment;
       
    }
    
@@ -169,37 +172,21 @@ public class Exploration extends Mission {
     //for during mission check
     @Override
     public void checkMissionContinues() {
-        if (!driver.canPerform(requiredSkill())) {
-            failMission("Agent is unsuitable! Does not have required skill.");
-        }
-        if (!(driver.getHealth() > 50 && driver.getFatigueLevel() < 80)) {
-            failMission("Agent is unhealthy or fatigued!");
-        }
-        if (!(driver.available())) {
-            failMission("Agent is unavailable.");
-        }
+        if (!driver.canPerform(requiredSkill())) { failMission("Agent is unsuitable!"); return; }
+        if (!(driver.getHealth() > 50 && driver.getFatigueLevel() < 80)) { failMission("Agent is unhealthy or fatigued!"); return; }
         for (Equipment e : explorationEquipment) {
-            if (e.isDamaged()) {
-                failMission("Equipment is damaged!");
-            }
+            if (e.isDamaged()) { failMission("Equipment is damaged!"); return; }
         }
-        if (!(r.getBatteryLevel() <= 20)) {
-            failMission("Bot's battery is running low!");
-        }
-        if (!r.getDamageStatus()) {
-            failMission("Bot sustained damage!");
-        }
-        if (comm == null || !comm.checkSignal()) {
-            failMission("Communication disruption during mission!");
-        }
-        boolean environmentSuitable = (r instanceof Drone)
-                ? missionEnvironment.isDustStorm()
-                : missionEnvironment.isCommDisruption();
+        if (r.getBatteryLevel() <= 20) { failMission("Bot's battery is low!"); return; }
+        if (r.getDamageStatus()) { failMission("Bot sustained damage!"); return; }
+        if (comm == null || !comm.checkSignal()) { failMission("Communication disruption!"); return; }
 
-        if (!environmentSuitable) {
-            failMission("Environmental conditions are unsuitable!");
-        }
-}
+        boolean suitable = (r instanceof Drone)
+                ? !missionEnvironment.isCommDisruption()
+                : !missionEnvironment.isDustStorm();
+        if (!suitable) { failMission("Environmental conditions are unsuitable!"); }
+    }
+
 
     @Override
     public void CheckForEmergency() {

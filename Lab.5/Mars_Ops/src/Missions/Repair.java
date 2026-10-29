@@ -44,6 +44,7 @@ public class Repair extends Mission {
            throw new IllegalArgumentException("Repairs cannot be conducted on martian Surface!");
        }
        this.comm = comm;
+       this.colony = colony;
    }
    
    //for initial checks

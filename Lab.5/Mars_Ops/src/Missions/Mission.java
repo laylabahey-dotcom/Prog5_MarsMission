@@ -90,13 +90,6 @@ public abstract class Mission {
         System.out.println("Mission authorised.");
         colony.setActiveMission(this);
         activeSlotClaimed = true;
-        status = MissionStatus.ASSIGNED;
-        for (Person p : people) {
-            p.setAvailable(false);
-        }
-        for (Robot r : robots) {
-            r.setAvailable(false);
-        }
         status = MissionStatus.IN_PROGRESS;   // duration counting starts here
         if (remainingTime == 0) {
             endMission();

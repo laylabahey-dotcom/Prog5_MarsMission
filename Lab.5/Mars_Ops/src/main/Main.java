@@ -42,41 +42,72 @@ public class Main {
         solar.addRobot(drone);
 
         //comm station
-        Communication_Stations comm = new Communication_Stations(56.7, true, "C-001", "idk", 100, true, storageRes, generalEquip);
+        Communication_Stations comm = new Communication_Stations(80.0, true, "C-001", "Mars Base", 100, true, storageRes, generalEquip);
 
         //Scenario 1: Successful Exploration
         Resources[] expRes1 = {new Resources(0, 0, 0, 0, 10, 0, 2)};
         Equipment[] roverEquip = {new Equipment("002", "Scanner", false)};
         Exploration validMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
-        if(solar.submitMission(validMission)){
-            validMission.startMission();
+        try {
+            if (solar.submitMission(validMission)) validMission.advanceTime(5);
+        } catch (IllegalStateException e) {
+            System.out.println("Exception: " + e.getMessage());
         }
-        System.out.println("Scenario 1 Passed! Exploration mission executed successfully!\n");
+        if (validMission.getStatus() == Mission.MissionStatus.COMPLETED) {
+            System.out.println("Scenario 1 Passed!\n");
+        } else {
+            System.out.println("Scenario 1 Failed! " + validMission.getFailureReason() + "\n");
+        }
         
-
-        //Scenario 2: Mission Rejection
+        System.out.println("\n \n");
+                
+        // Scenario 2: Mission Rejection
         Resources expRes2 = new Resources(0, 0, 0, 0, 10, 0, 2);
         Equipment researchEquip = new Equipment("004", "Microscope", false);
         Laboratory research_lab = new Laboratory(100, "C406", "dokky", 50, true, expRes2, researchEquip);
-        Research rejectedMission = new Research(10, eng, new Equipment[]{researchEquip}, new Resources[]{expRes2}, research_lab, solar);
-        if(solar.submitMission(rejectedMission)){
-            rejectedMission.startMission();
+
+        Research rejectedMission = null;
+        try {
+            rejectedMission = new Research(10, eng, new Equipment[]{researchEquip},
+                    new Resources[]{expRes2}, research_lab, solar);
+            solar.submitMission(rejectedMission);
+        } catch (IllegalStateException e) {
+            System.out.println("Exception: " + e.getMessage());
         }
-        System.out.println("Scenario 2 Passed! Research mission failed due to unsuitable agent!\n");
+
+        if (rejectedMission == null || rejectedMission.getStatus() == Mission.MissionStatus.FAILED) {
+            System.out.println("Scenario 2 Passed! Research mission rejected because the assigned person is not a scientist!\n");
+        } else {
+            System.out.println("Scenario 2 Failed! Research mission was not rejected!\n");
+            System.out.println("Mission status: " + rejectedMission.getStatus());
+        }
+        
+        System.out.println("\n \n");
         
         //Scenario 3: Resource Shortage
         Resources[] expRes3 = {new Resources(0, 0, 0, 0, 10, 0, 222)};
         Equipment[] repairEquip = {new Equipment("003", "Tools", false)};
         Habitats shelter = new Habitats(220, "H-230", "idk", 500, true, storageRes, generalEquip);
-        Repair shortageMission = new Repair(5, eng, repair, repairEquip, expRes3, shelter, solar, comm);
-        if(solar.submitMission(shortageMission)){
-                shortageMission.startMission();;
-            }
-        if (shortageMission.getStatus() == Mission.MissionStatus.FAILED) {
+
+        Repair shortageMission = null;
+        try {
+            shortageMission = new Repair(5, eng, repair, repairEquip, expRes3, shelter, solar, comm);
+            solar.submitMission(shortageMission);
+        } catch (IllegalStateException e) {
+            System.out.println("Exception: " + e.getMessage());
+        }
+
+        if (shortageMission != null && shortageMission.getStatus() == Mission.MissionStatus.FAILED) {
             System.out.println("Scenario 3 Passed! Resource shortage correctly caught and rejected!\n");
+        } else {
+            System.out.println("Scenario 3 Failed! Resource shortage was not caught!\n");
+            if (shortageMission != null) {
+                System.out.println("Mission status: " + shortageMission.getStatus());
+            }
         }
 
         //Scenario 4: Emergency Handling
+        
         
         //Scenario 5: Environmental Effect
         
