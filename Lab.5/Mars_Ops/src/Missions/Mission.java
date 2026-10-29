@@ -61,6 +61,9 @@ public abstract class Mission {
 
     // start a mission -> check for activity of the mission
     public void startMission() {
+        if(activeMissionCount == 1){
+            throw new IllegalStateException("An active mission is already underway.");
+        }
         if (status != MissionStatus.PENDING) {
             throw new IllegalStateException("This mission is already assigned.");
         }
