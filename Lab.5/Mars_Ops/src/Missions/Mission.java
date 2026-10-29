@@ -9,8 +9,7 @@ import main.*;
 
 public abstract class Mission {
     public enum MissionStatus { PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, FAILED }
-    
-    public static int activeMissionCount = 0;
+   
     private boolean activeSlotClaimed = false;
     private int totalTime;
     
