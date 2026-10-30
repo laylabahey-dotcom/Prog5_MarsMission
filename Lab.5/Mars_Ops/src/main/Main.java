@@ -49,7 +49,7 @@ public class Main {
         Equipment[] roverEquip = {new Equipment("002", "Scanner", false)};
         Exploration validMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
         try {
-            if (solar.submitMission(validMission)) validMission.advanceTime(5);
+            if (solar.submitMission(validMission)) simulation.advanceTime(5);
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());
         }
@@ -68,7 +68,7 @@ public class Main {
 
         Research rejectedMission = null;
         try {
-            rejectedMission = new Research(10, eng, new Equipment[]{researchEquip},
+            rejectedMission = new Research(10, sci, new Equipment[]{researchEquip},
                     new Resources[]{expRes2}, research_lab, solar);
             solar.submitMission(rejectedMission);
         } catch (IllegalStateException e) {
@@ -105,9 +105,25 @@ public class Main {
                 System.out.println("Mission status: " + shortageMission.getStatus());
             }
         }
+        
+        System.out.println("\n \n");
 
         //Scenario 4: Emergency Handling
+        Resources habRes = new Resources(100, 100, 50, 50, 10, 10, 10);
+        Habitats emergencyHab = new Habitats(100, "H-999", "idk", 50, true, habRes, generalEquip);
+        solar.addFacility(emergencyHab);
+
+        OxygenLeak leak = new OxygenLeak("Dome B", emergencyHab, 20, solar);
+
+        leak.resolveEmergency();
+
+        if (leak.isSolved()) {
+            System.out.println("Scenario 4 Passed! Emergency resolved and state updated successfully!\n");
+        } else {
+            System.out.println("Scenario 4 Failed! Emergency remained unresolved.\n");
+        }
         
+        System.out.println("\n \n");
         
         //Scenario 5: Environmental Effect
         marsEnv.triggerDustStorm();
