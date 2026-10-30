@@ -110,6 +110,28 @@ public class Main {
         
         
         //Scenario 5: Environmental Effect
+        marsEnv.triggerDustStorm();
+        Resources[] expRes5 = {new Resources(0, 3, 0, 0, 11, 0, 3)};
+        Equipment[] roverEquip5 = {new Equipment("005", "Scanner", false)};
+        Exploration weatherMission = null;
+        
+        try {
+            weatherMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
+            solar.submitMission(weatherMission);
+             
+        } catch (IllegalStateException e) {
+            System.out.println("Exception: " + e.getMessage());//weather warning
+        }
+        if (weatherMission.getStatus() == Mission.MissionStatus.FAILED) {
+            System.out.println("Scenario 5 Passed! Exploration mission successfully grounded due to the dust storm!");
+        } else {
+            System.out.println("Scenario 5 Failed! Mission was not blocked by the environment!\n");
+            System.out.println("Mission status: " + weatherMission.getStatus());
+        }
+        
+}
+        
+        
         
     }
-}
+
