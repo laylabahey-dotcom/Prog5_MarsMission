@@ -5,7 +5,7 @@ import Personnel.*;
 import main.*;
 import supply.*;
 
-public class Fire extends Emergency {
+public class Fire extends Emergency { //changed a lot of stuff here -k
 
     private Laboratory targetLab;
     private int fireLevel;//o2 loss and resource cost
@@ -25,8 +25,12 @@ public class Fire extends Emergency {
         this.fireResponder = fireResponder;
         this.medicalResponder = medicalResponder;
         
-        
-        //immediate fire impact
+        if(fireResponder!=null) addResponder(fireResponder);
+        if(medicalResponder!=null) addResponder(medicalResponder); //populating list
+        applyInitialFireImpact();   
+    }   
+    
+    private void applyInitialFireImpact() { //helper function
         if (targetLab != null) {
             targetLab.setOpStatus(false);//unavailable lab
             System.out.println("WARNING! Fire at " + location + "! Laboratory is unavailable.");
@@ -62,45 +66,41 @@ public class Fire extends Emergency {
         }
         this.targetLab = targetLab;
         this.fireLevel = fireLevel;
-        if (targetLab != null) {
-            targetLab.setOpStatus(false);//unavailable lab
-            System.out.println("WARNING! Fire at " + location + "! Laboratory is unavailable.");
-
-            //damaged equipment
-            Equipment labEquipment = targetLab.getEquipment();
-            if (labEquipment != null) {
-                labEquipment.setDamaged(true);
-            }
-            //o2 increase
-            if (targetLab.getResource() != null) {
-                Resources resource = targetLab.getResource();
-                int availableO2 = resource.getO2_count();
-
-                int lossO2 = fireLevel * 2;//burns
-                int actualSub = lossO2;
-                if (availableO2 < lossO2) {
-                    actualSub = availableO2; //insufficient o2 to subtract from
-
-                }
-                if (actualSub > 0) {
-                    targetLab.removeResources("oxygen", actualSub);
-                    System.out.println("WARNING: Fire consumed " + actualSub + " units of oxygen in " + location);
-                }
-            }
-        }
+        applyInitialFireImpact();
     }
 
     @Override
-    public void resolveEmergency() {
+    public void resolveEmergency() { //changed stuff here -k
         //valid lab reference
         if (targetLab == null) {
             System.out.println("Error in resolving! Target laboratory does not exist.");
             return;
         }
+        if (fireResponder == null || !fireResponder.available()) {
+            for(Person p:colony.getAllCrewMembers()) {
+                if(p.canPerform("Firefighting")&&p.available()) {
+                    fireResponder=(FireFighter) p;
+                    addResponder(fireResponder);
+                    break;
+                }
+            }
+        }
+        
+        if (medicalResponder == null || !medicalResponder.available()) {
+            for(Person p:colony.getAllCrewMembers()) {
+                if(p.canPerform("Medical")&&p.available()) {
+                    medicalResponder=(MedicalOfficer) p;
+                    addResponder(medicalResponder);
+                    break;
+                }
+            }
+        }
+        
         if (fireResponder == null || !fireResponder.available() || medicalResponder == null || !medicalResponder.available()) {
             System.out.println("Emergency unresolved! Required responders are unavailable.");
             return;
         }
+        
         //check colony resources
         int reqParts = 0;
         if (reqResources != null) {
@@ -130,6 +130,8 @@ public class Fire extends Emergency {
             System.out.println("Fire at " + location + " has been successfully resolved!");
         }
     }
+    
+    @Override
     public void checkUnresolved(){
         if(!solved && targetLab != null && targetLab.getResource() != null){
             Resources resource = targetLab.getResource();
@@ -150,11 +152,6 @@ public class Fire extends Emergency {
             }
             
         }
-    }
-
-    @Override
-    public String getType() {
-        return this.type;
     }
     
 }

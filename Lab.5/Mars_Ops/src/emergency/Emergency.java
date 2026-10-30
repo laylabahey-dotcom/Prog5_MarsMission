@@ -1,10 +1,10 @@
 package emergency;
 
-import colony_facilities.*;
 import Personnel.*;
 import robots.*;
 import main.*;
-import supply.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public abstract class Emergency {
 
@@ -12,6 +12,8 @@ public abstract class Emergency {
     protected String location;
     protected boolean solved;
     protected MarsOps colony;
+    protected final List<Person> responders=new ArrayList<>();
+    protected final List<Robot> robotResponders=new ArrayList<>();
 
     public Emergency(String type, String location, MarsOps colony) {
         this.type = type;
@@ -19,14 +21,36 @@ public abstract class Emergency {
         this.colony = colony;
         this.solved = false;
     }
+    
+    public void addResponder(Person p) {
+        if(p!=null) responders.add(p);
+    }
+    
+    public void addRobotResponder(Robot r) {
+        if(r!=null) robotResponders.add(r);
+    }
 
     public boolean isSolved() {
         return solved;
     }
+    public String getType() {
+        return type;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public MarsOps getColony() {
+        return colony;
+    }
     
-    public abstract String getType();
-    
+    public abstract void checkUnresolved();
     public abstract void resolveEmergency();
 
-    
+    public void handleEmergency(){
+        System.out.println("Processing hazard: "+type+" at "+location+"...");
+        resolveEmergency();
+        if(!solved) {
+            checkUnresolved();
+        }
+    }
 }

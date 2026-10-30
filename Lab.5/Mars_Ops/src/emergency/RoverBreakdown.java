@@ -23,6 +23,10 @@ public class RoverBreakdown extends Emergency {
         this.reqResources = reqResources;
         this.engineer = engineer;
         this.robot = robot;
+        
+        if(engineer!=null) addResponder(engineer);
+        if(robot!=null) addRobotResponder(robot);
+        
         //immediate breakdown
         if (targetRover != null) {
             //op = false
@@ -43,6 +47,26 @@ public class RoverBreakdown extends Emergency {
         if (targetRover == null) {
             System.out.println("Error in resolving! Target rover does not exist.");
             return;
+        }
+        
+        if (engineer == null || !engineer.available()) {
+            for(Person p:colony.getAllCrewMembers()) {
+                if(p.canPerform("Repair")&&p.available()) {
+                    engineer=(Engineer) p;
+                    addResponder(engineer);
+                    break;
+                }
+            }
+        }
+        
+        if (robot == null || !robot.isAvailable()) {
+            for(Robot r:colony.getRobots()) {
+                if(r.canPreform("Repair")&&r.isAvailable()) {
+                    robot=(RepairRobot) r;
+                    addRobotResponder(robot);
+                    break;
+                }
+            }
         }
 
         if (engineer == null || !engineer.available() || robot == null || !robot.isAvailable()) {
@@ -78,6 +102,7 @@ public class RoverBreakdown extends Emergency {
 
             // Repair the rover and update its status
             targetRover.setAvailable(true);
+            targetRover.setDamageStatus(false);
 
             // Resume the mission
             if (targetMission != null) {
@@ -93,15 +118,16 @@ public class RoverBreakdown extends Emergency {
     
     
 }
+    @Override
     public void checkUnresolved() {
         if (!solved) {
+            if(targetRover!=null) {
+                targetRover.setDamageStatus(true);
+                targetRover.setAvailable(false);
+            }
             System.out.println("Rover breakdown at " + location + " remains unresolved. Rover is still stranded.");
         }
     }
     
-    @Override
-    public String getType() {
-        return this.type;
-    }
 
 }

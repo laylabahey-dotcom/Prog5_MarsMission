@@ -20,6 +20,8 @@ public class Medical extends Emergency {
         this.doctor = doctor;
         this.targetFacility = targetFacility;
         this.reqMedSupplies = reqMedSupplies;
+        
+        if(doctor!=null) addResponder(doctor);
 
         // Immediate consequence
         if (patient != null) {
@@ -33,6 +35,16 @@ public class Medical extends Emergency {
         if (targetFacility != null && !targetFacility.isOpStatus()) {
             System.out.println("Error in resolving! Medical facility is inoperable.");
             return;
+        }
+        
+        if (doctor == null || !doctor.available()) {
+            for(Person p:colony.getAllCrewMembers()) {
+                if(p.canPerform("Medical")&&p.available()) {
+                    doctor=(MedicalOfficer) p;
+                    addResponder(doctor);
+                    break;
+                }
+            }
         }
 
         if (doctor == null || !doctor.available()) {
@@ -76,14 +88,12 @@ public class Medical extends Emergency {
         }
     
 }
+    @Override
     public void checkUnresolved() {
         if (!solved && patient != null) { 
             System.out.println("Emergency at " + location + " went unresolved!");
         }
     }
-    @Override
-    public String getType() {
-        return this.type;
-    }
+    
 
 }

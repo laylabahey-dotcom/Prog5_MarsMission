@@ -25,7 +25,9 @@ public class OxygenLeak extends Emergency {
         this.reqResources = reqResources;
         this.engineer = engineer;
         this.robot = robot;
-
+        applyInitialLeakImpact();
+    }
+    private void applyInitialLeakImpact() {
         //reduce o2 from target habitat
         if (targetHabitat != null && leakRate > 0 && targetHabitat.getResource() != null) {
             Resources resource = targetHabitat.getResource();
@@ -52,22 +54,7 @@ public class OxygenLeak extends Emergency {
         }
         this.leakRate = leakRate;
         this.targetHabitat = targetHabitat;
-        //reduce o2 from target habitat
-        if (targetHabitat != null && leakRate > 0 && targetHabitat.getResource() != null) {
-            Resources resource = targetHabitat.getResource();
-            int availableO2 = resource.getO2_count();
-
-            //get value after deduction so that it doesnt drop <0
-            int afterO2Sub = leakRate;
-            if (availableO2 < leakRate) {
-                afterO2Sub = availableO2;// -ve after Sub
-            }
-            if (afterO2Sub > 0) {
-                //subtract O2 from target habitat
-                targetHabitat.removeResources("oxygen", afterO2Sub);
-                System.out.println("WARNING! Oxygen leak triggered! " + afterO2Sub + " units lost from " + location);
-            }
-        }
+        applyInitialLeakImpact();
     }
 
     @Override
@@ -76,11 +63,32 @@ public class OxygenLeak extends Emergency {
             System.out.println("Error in resolving! Habitat is inoperable!");
             return;
         }
-        //check responders
-        if (engineer == null || !engineer.available() || robot == null || !robot.isAvailable() ) {
+        //fill
+        if (engineer == null || !engineer.available()) {
+            for(Person p:colony.getAllCrewMembers()) {
+                if(p.canPerform("Repair")&&p.available()) {
+                    engineer=(Engineer) p;
+                    addResponder(engineer);
+                    break;
+                }
+            }
+        }
+        
+        if (robot == null || !robot.isAvailable()) {
+            for(Robot r:colony.getRobots()) {
+                if(r.canPreform("Repair")&&r.isAvailable()) {
+                    robot=(RepairRobot) r;
+                    addRobotResponder(robot);
+                    break;
+                }
+            }
+        }
+        
+        if (engineer == null || !engineer.available() || robot == null || !robot.isAvailable()) {
             System.out.println("Emergency unresolved! Required resolvers are unavailable.");
             return;
         }
+        
         //check colony resources
         int reqParts = 0;
         if (reqResources != null) {
@@ -113,7 +121,7 @@ public class OxygenLeak extends Emergency {
             System.out.println("Emergency unsolved! Resource allocation failed.");
         }
     }
-
+    @Override
     public void checkUnresolved() {
         if (!solved && targetHabitat != null && targetHabitat.getResource() != null) {
             Resources resource = targetHabitat.getResource();
@@ -133,10 +141,6 @@ public class OxygenLeak extends Emergency {
         }
     }
     
-    @Override
-    public String getType() {
-        return this.type;
-    }
     
     
 }
