@@ -113,7 +113,7 @@ public class Main {
 
         //Scenario 4: Emergency Handling
         Resources habRes = new Resources(100, 100, 50, 50, 10, 10, 10);
-        Habitats emergencyHab = new Habitats(100, "H-999", "idk", 50, true, habRes, generalEquip);
+        Habitats emergencyHab = new Habitats(100, "H-999", "idk", 500, true, habRes, generalEquip);
         solar.addFacility(emergencyHab);
 
         OxygenLeak leak = new OxygenLeak("Dome B", emergencyHab, 20, solar);
