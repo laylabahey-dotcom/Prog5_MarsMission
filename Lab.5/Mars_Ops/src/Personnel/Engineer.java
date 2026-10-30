@@ -9,7 +9,6 @@ public class Engineer extends Person {
     @Override
     public boolean canPerform(String task) {
         return task.equalsIgnoreCase("Repair") ||
-                task.equalsIgnoreCase("Exploration") ||
                 task.equalsIgnoreCase("Rescue");
     }
 }

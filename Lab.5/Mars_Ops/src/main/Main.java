@@ -47,9 +47,10 @@ public class Main {
         //Scenario 1: Successful Exploration
         Resources[] expRes1 = {new Resources(0, 0, 0, 0, 10, 0, 2)};
         Equipment[] roverEquip = {new Equipment("002", "Scanner", false)};
-        Exploration validMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
+        Exploration validMission = new Exploration(5, sci, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
         try {
-            if (solar.submitMission(validMission)) simulation.advanceTime(5);
+            solar.submitMission(validMission);
+            validMission.advanceTime(5);
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());
         }
@@ -68,9 +69,10 @@ public class Main {
 
         Research rejectedMission = null;
         try {
-            rejectedMission = new Research(10, sci, new Equipment[]{researchEquip},
+            rejectedMission = new Research(10, eng, new Equipment[]{researchEquip},
                     new Resources[]{expRes2}, research_lab, solar);
             solar.submitMission(rejectedMission);
+            rejectedMission.advanceTime(10);
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());
         }
@@ -93,6 +95,7 @@ public class Main {
         try {
             shortageMission = new Repair(5, eng, repair, repairEquip, expRes3, shelter, solar, comm);
             solar.submitMission(shortageMission);
+            shortageMission.advanceTime(5);
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());
         }
@@ -132,6 +135,7 @@ public class Main {
         try {
             weatherMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
             solar.submitMission(weatherMission);
+            weatherMission.advanceTime(5);
              
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());//weather warning

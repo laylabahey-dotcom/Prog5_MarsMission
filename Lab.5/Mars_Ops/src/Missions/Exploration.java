@@ -14,20 +14,20 @@ public class Exploration extends Mission {
     private Equipment explorationEquipment[];
     private Communication_Stations comm;
     private Resources expRes[];
-    private Person driver;
+    private Person explorer;
     private Environment missionEnvironment;
     private MarsSurface surface;
     private MarsOps colony;
 
-    public Exploration(int totalTime, Person driver, Robot r, Equipment explorationEquipment[],
+    public Exploration(int totalTime, Person explorer, Robot r, Equipment explorationEquipment[],
             Communication_Stations comm, Resources expRes[], Environment missionEnvironment,
             MarsOps colony, MarsSurface surface) {
 
         super(totalTime, colony);
         this.r = r;
         this.surface = surface;
-        this.driver = driver;
-        people.add(driver);
+        this.explorer = explorer;
+        people.add(explorer);
         this.explorationEquipment = explorationEquipment;
         this.expRes = expRes;
         this.colony = colony;
@@ -55,7 +55,7 @@ public class Exploration extends Mission {
 
     @Override
     public void personnelPerformanceCheck() {
-        if (driver.getHealth() > 50 && driver.getFatigueLevel() < 80) {
+        if (explorer.getHealth() > 50 && explorer.getFatigueLevel() < 80) {
             System.out.println("Engineer is healthy and rested!");
         } else {
             this.unsuitableAgent();
@@ -64,7 +64,7 @@ public class Exploration extends Mission {
 
     @Override
     public void personnelavailabilityCheck() {
-        if (driver.available()) {
+        if (explorer.available()) {
             System.out.println("Driver is available!");
         } else {
             this.unavailablePersonnel();
@@ -172,8 +172,8 @@ public class Exploration extends Mission {
     //for during mission check
     @Override
     public void checkMissionContinues() {
-        if (!driver.canPerform(requiredSkill())) { failMission("Agent is unsuitable!"); return; }
-        if (!(driver.getHealth() > 50 && driver.getFatigueLevel() < 80)) { failMission("Agent is unhealthy or fatigued!"); return; }
+        if (!explorer.canPerform(requiredSkill())) { failMission("Agent is unsuitable!"); return; }
+        if (!(explorer.getHealth() > 50 && explorer.getFatigueLevel() < 80)) { failMission("Agent is unhealthy or fatigued!"); return; }
         for (Equipment e : explorationEquipment) {
             if (e.isDamaged()) { failMission("Equipment is damaged!"); return; }
         }
