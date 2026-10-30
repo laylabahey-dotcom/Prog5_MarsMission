@@ -111,8 +111,6 @@ public class Main {
         
         //Scenario 5: Environmental Effect
         marsEnv.triggerDustStorm();
-        Resources[] expRes5 = {new Resources(0, 3, 0, 0, 11, 0, 3)};
-        Equipment[] roverEquip5 = {new Equipment("005", "Scanner", false)};
         Exploration weatherMission = null;
         
         try {
