@@ -24,6 +24,7 @@ public class Research extends Mission {
         
         
         this.scientist = scientist;
+        this.people.add(scientist);
         this.scientificEquipment = scientificEquipment;
         this.scientificResources = scientificResources;
         if(!(lab instanceof Laboratory)){

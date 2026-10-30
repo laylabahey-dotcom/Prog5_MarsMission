@@ -15,7 +15,7 @@ public class Simulation {
     private Environment environment;
     private int currentTime;
     private Random random;
-      private Emergency emergency;
+    private Emergency emergency;
 
     public Simulation(MarsOps colony, Environment environment) {
         this.colony = colony;
