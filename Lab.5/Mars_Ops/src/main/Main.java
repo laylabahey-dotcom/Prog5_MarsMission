@@ -72,7 +72,7 @@ public class Main {
             rejectedMission = new Research(10, eng, new Equipment[]{researchEquip},
                     new Resources[]{expRes2}, research_lab, solar);
             solar.submitMission(rejectedMission);
-            rejectedMission.advanceTime(10);
+            simulation.advanceTime(10);
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());
         }
@@ -95,7 +95,7 @@ public class Main {
         try {
             shortageMission = new Repair(5, eng, repair, repairEquip, expRes3, shelter, solar, comm);
             solar.submitMission(shortageMission);
-            shortageMission.advanceTime(5);
+            simulation.advanceTime(5);
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());
         }
@@ -135,7 +135,7 @@ public class Main {
         try {
             weatherMission = new Exploration(5, eng, rover, roverEquip, comm, expRes1, marsEnv, solar, surface);
             solar.submitMission(weatherMission);
-            weatherMission.advanceTime(5);
+            simulation.advanceTime(5);
              
         } catch (IllegalStateException e) {
             System.out.println("Exception: " + e.getMessage());//weather warning
