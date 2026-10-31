@@ -7,7 +7,6 @@ import robots.*;
 import colony_facilities.*;
 import emergency.*;
 import Missions.*;
-import supply.*;
 
 public class Simulation {
 
@@ -15,7 +14,6 @@ public class Simulation {
     private Environment environment;
     private int currentTime;
     private Random random;
-    private Emergency emergency;
 
     public Simulation(MarsOps colony, Environment environment) {
         this.colony = colony;
@@ -93,11 +91,13 @@ public class Simulation {
                     Laboratory lab = (Laboratory) f;
                     System.out.println("A SUDDEN FIRE BROKE OUT AT LAB " + f.getLocation() + "!!");
                     Fire fire = new Fire(f.getLocation(), lab, 20, colony);
+                    fire.handleEmergency();
                     break;
                 } else if (f.isOpStatus() && f instanceof Habitats && random.nextBoolean()) {
                     Habitats shelter = (Habitats) f;
                     System.out.println("OXYGEN LEAK DETECTED IN HABITAT " + f.getLocation() + "!!");
                     OxygenLeak leak = new OxygenLeak(f.getLocation(), shelter, 20, colony);
+                    leak.handleEmergency();
                     break;
                 }
             }

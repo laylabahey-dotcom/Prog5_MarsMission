@@ -4,16 +4,21 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/main/Main.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/emergency/Emergency.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/main/Simulation.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/Personnel/Person.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/main/MarsOps.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/robots/Robot.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/Missions/Mission.java</file>
-            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/supply/Resources.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/supply/Equipment.java</file>
-            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/emergency/Emergency.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/colony_facilities/Facilities.java</file>
             <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/emergency/Fire.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/Missions/Exploration.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/emergency/OxygenLeak.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/colony_facilities/Habitats.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/emergency/Medical.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/emergency/RoverBreakdown.java</file>
+            <file>file:/C:/Users/khadi/Desktop/programming%202/Prog5_MarsMission/Lab.5/Mars_Ops/src/Personnel/Scientist.java</file>
         </group>
     </open-files>
 </project-private>
